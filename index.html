@@ -135,18 +135,18 @@ img.g,.tbtn img.g{border-radius:23%;display:block;object-fit:contain;box-shadow:
 .win:-webkit-full-screen .tb,.win:-webkit-full-screen .rs{display:none}
 
 /* DSMHub Discord-style community chat */
-.dch{height:100%;min-height:0;display:grid;grid-template-columns:62px 208px minmax(0,1fr) 190px;background:#313338;color:#f2f3f5;font:13px/1.45 Poppins,system-ui,sans-serif;overflow:hidden}
+.dch{height:100%;min-height:0;display:grid;grid-template-columns:220px minmax(0,1fr) 190px;background:#313338;color:#f2f3f5;font:13px/1.45 Poppins,system-ui,sans-serif;overflow:hidden}
 .dch button,.dch input,.dch textarea{font:inherit}
-.dch-rail{background:#1e1f22;display:flex;flex-direction:column;align-items:center;gap:9px;padding:12px 7px}
-.dch-logo,.dch-server{width:44px;height:44px;border:0;border-radius:50%;display:grid;place-items:center;background:#313338;color:#fff;font-weight:700;cursor:pointer;transition:.14s}
-.dch-logo{background:#5865f2;border-radius:15px;font-size:15px}
-.dch-server:hover,.dch-server.active{border-radius:15px;background:#5865f2}
-.dch-divider{width:30px;height:1px;background:#3f4147}
 .dch-channels{background:#2b2d31;display:flex;flex-direction:column;min-width:0}
 .dch-head{height:49px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid #202124;font-weight:600;color:#fff}
-.dch-head .dch-gear{border:0;background:none;color:#b5bac1;font-size:16px;cursor:pointer}
-.dch-channel-title{padding:19px 10px 6px;color:#949ba4;font-size:10px;font-weight:700;letter-spacing:.08em}
-.dch-channel-list{padding:0 7px}
+.dch-channel-title{display:flex;align-items:center;justify-content:space-between;padding:16px 10px 5px;color:#949ba4;font-size:10px;font-weight:700;letter-spacing:.08em}
+.dch-channel-list{padding:0 7px 8px;overflow:auto;min-height:0}
+.dch-category{margin-top:9px}
+.dch-category:first-child{margin-top:0}
+.dch-category-head{height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 3px;color:#949ba4;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.dch-category-add,.dch-add-category{width:23px;height:23px;border:0;border-radius:5px;background:transparent;color:#b5bac1;font-size:16px;cursor:pointer}
+.dch-category-add:hover,.dch-add-category:hover{background:#404249;color:#fff}
+.dch-admin-note{padding:10px 9px;color:#f0c674;font-size:10px;line-height:1.45}
 .dch-channel{width:100%;height:34px;padding:0 9px;border:0;border-radius:5px;background:none;color:#b5bac1;text-align:left;display:flex;align-items:center;gap:8px;cursor:pointer}
 .dch-channel:hover{background:#35373c;color:#dbdee1}
 .dch-channel.active{background:#404249;color:#fff}
@@ -176,6 +176,25 @@ img.g,.tbtn img.g{border-radius:23%;display:block;object-fit:contain;box-shadow:
 .dch-msg-head strong{font-size:12px;color:#f2f3f5}
 .dch-msg-head time{font-size:10px;color:#949ba4}
 .dch-msg-body{color:#dbdee1;font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere}
+.dch-message-tools{margin-left:auto;display:flex;gap:4px;opacity:0;transition:opacity .12s}
+.dch-message:hover .dch-message-tools,.dch-message:focus-within .dch-message-tools{opacity:1}
+.dch-message-delete,.dch-manage-member{border:0;border-radius:4px;background:#404249;color:#dbdee1;padding:3px 7px;font-size:10px;cursor:pointer}
+.dch-message-delete:hover,.dch-manage-member:hover{background:#b33b42;color:#fff}
+.dch-attachments{display:flex;flex-direction:column;gap:7px;margin-top:8px}
+.dch-attachment{width:min(100%,360px);padding:8px;border:1px solid #41434a;border-radius:7px;background:#292b30;color:#dbdee1;text-decoration:none;display:flex;align-items:center;gap:8px;font-size:11px}
+.dch-attachment:hover{border-color:#5865f2}
+.dch-attachment-preview{display:block;max-width:min(100%,360px);max-height:240px;object-fit:contain;margin-top:7px;border-radius:7px;cursor:zoom-in}
+.dch-member{min-width:0}
+.dch-role-badge{flex:none;border-radius:4px;padding:2px 5px;background:#414b87;color:#dfe2ff;font-size:9px;font-weight:700}
+.dch-role-badge.owner{background:#725533;color:#ffe2a6}
+.dch-member-tools{margin-left:auto}
+.dch-file-picker{width:30px;height:32px;flex:none;border:0;border-radius:6px;background:transparent;color:#b5bac1;font-size:20px;cursor:pointer}
+.dch-file-picker:hover{background:#45474f;color:#fff}
+.dch-file-queue{display:flex;flex-wrap:wrap;gap:5px;padding:0 3px 5px}
+.dch-file-chip{display:flex;align-items:center;gap:6px;max-width:100%;padding:4px 7px;border:1px solid #45474f;border-radius:6px;background:#292b30;color:#c9cbd0;font-size:10px}
+.dch-file-chip span{max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dch-file-chip button{border:0;background:transparent;color:#b5bac1;cursor:pointer}
+.dch-file-error{color:#ff8b8b;font-size:10px;padding:2px 3px}
 .dch-empty{color:#949ba4;text-align:center;padding:24px;font-size:12px}
 .dch-composer-wrap{padding:8px 16px 15px;flex:none}
 .dch-compose{display:flex;align-items:flex-end;gap:9px;padding:9px 10px;background:#383a40;border-radius:8px}
@@ -212,8 +231,8 @@ img.g,.tbtn img.g{border-radius:23%;display:block;object-fit:contain;box-shadow:
 #menu .updater button,#menu .updater a{font:inherit;font-size:10px}
 #menu .updater a{color:var(--accent);text-decoration:none}
 #menu .updater a:hover{text-decoration:underline}
-@media(max-width:930px){.dch{grid-template-columns:56px 190px minmax(0,1fr)}.dch-members{display:none}}
-@media(max-width:620px){.dch{grid-template-columns:52px minmax(0,1fr)}.dch-channels{display:none}.dch-messages{padding:12px 9px}.dch-composer-wrap{padding:7px 9px 10px}.dch-top{padding:0 9px}.dch-topic{display:none}}
+@media(max-width:930px){.dch{grid-template-columns:210px minmax(0,1fr)}.dch-members{display:none}}
+@media(max-width:620px){.dch{grid-template-columns:minmax(0,1fr)}.dch-channels{display:none}.dch-messages{padding:12px 9px}.dch-composer-wrap{padding:7px 9px 10px}.dch-top{padding:0 9px}.dch-topic{display:none}}
 
 </style>
 </head>
@@ -361,8 +380,10 @@ function chatLoadScript(name,url,publishableKey){
  return window.__dsmhubChatScripts[name]
 }
 function chatApp(b){
- let config=chatReadConfig(),clerk=null,db=null,activeChannel='general',subscription=null,renderedUserId='',profileName='',busy=false,authListener=null,enteringUserId='',channelRequest=0,channelSequence=0;
- const channels=[{id:'general',name:'general',topic:'The place for anything DSMHub.'},{id:'games',name:'games',topic:'Talk about games and what you are playing.'},{id:'music',name:'music',topic:'Share what you are listening to.'},{id:'help',name:'help',topic:'Ask the community for help.'}];
+ let config=chatReadConfig(),clerk=null,db=null,activeChannel='general',subscription=null,renderedUserId='',profileName='',busy=false,authListener=null,enteringUserId='',channelRequest=0,channelSequence=0,currentRole='member',roleMap={},categories=[],pendingFiles=[];
+ const defaultCategories=[{id:'text',name:'Text Channels',position:0}];
+ const defaultChannels=[{id:'general',name:'general',topic:'The place for anything DSMHub.',category_id:'text',position:0},{id:'games',name:'games',topic:'Talk about games and what you are playing.',category_id:'text',position:1},{id:'music',name:'music',topic:'Share what you are listening to.',category_id:'text',position:2},{id:'help',name:'help',topic:'Ask the community for help.',category_id:'text',position:3}];
+ let channels=defaultChannels.map(x=>({...x}));
  const showSetup=(problem='')=>{
   b.innerHTML='<section class="dch-gate"><div class="dch-card"><div class="dch-brand"><span class="dch-brand-mark">D</span><span>DSMHub Community</span></div><h2>Connect your chat</h2><p>Enter the public keys for the Clerk and Supabase projects already set up for DSMHub.</p><label class="dch-field" for="dch-clerk-key">Clerk publishable key</label><input class="dch-input" id="dch-clerk-key" autocomplete="off" placeholder="pk_test_… or pk_live_…"><label class="dch-field" for="dch-supabase-url">Supabase project URL</label><input class="dch-input" id="dch-supabase-url" autocomplete="url"><label class="dch-field" for="dch-supabase-key">Supabase publishable key</label><input class="dch-input" id="dch-supabase-key" autocomplete="off" placeholder="sb_publishable_… or anon public key"><button class="dch-primary dch-setup-submit" id="dch-connect">Save and continue</button><div class="dch-error" id="dch-error"></div><div class="dch-note">These are public browser keys. Never enter a Clerk secret key or Supabase secret/service-role key. Values are saved only in this browser.</div></div></section>';
   $('#dch-clerk-key',b).value=config.clerkKey||'';
@@ -419,21 +440,34 @@ function chatApp(b){
    if(found.error)throw found.error;
    if(found.data)profileName=found.data.username;
    else{const added=await db.from('dsmhub_profiles').insert({user_id:user.id,username}).select('username').single();if(added.error)throw added.error;profileName=added.data.username}
-  }catch(e){showAuth('Could not prepare your chat profile: '+(e.message||'Check the Supabase profile table.'));return}
+   }catch(e){showAuth('Could not prepare your chat profile: '+(e.message||'Check the Supabase profile table.'));return}
+   await loadPermissions();
+   await loadStructure(false);
   renderedUserId=user.id;
-  b.innerHTML='<div class="dch dch-app"><nav class="dch-rail"><div class="dch-logo" title="DSMHub">D</div><div class="dch-divider"></div><button class="dch-server active" title="DSMHub Community">D</button><button class="dch-server" title="Add a server" aria-label="Add a server">+</button></nav><aside class="dch-channels"><div class="dch-head"><span>DSMHub Community</span><button class="dch-gear" id="dch-settings" title="Connection settings">•••</button></div><div class="dch-channel-title">TEXT CHANNELS</div><div class="dch-channel-list" id="dch-channel-list"></div><div class="dch-server-info"><strong>DSMHub</strong>Community chat</div></aside><main class="dch-main"><header class="dch-top"><span class="dch-hash">#</span><strong id="dch-channel-title">general</strong><span class="dch-topic" id="dch-topic"></span><span class="dch-top-spacer"></span><span class="dch-connection" id="dch-status">Connecting…</span><span class="dch-user" id="dch-user"></span><button class="dch-small-btn" id="dch-signout">Sign out</button></header><div class="dch-messages" id="dch-messages"></div><div class="dch-composer-wrap"><form class="dch-compose" id="dch-compose"><textarea id="dch-message" rows="1" maxlength="1500" placeholder="Message #general"></textarea><button class="dch-send" title="Send message" aria-label="Send message">➤</button></form><div class="dch-compose-help">Enter to send · Shift+Enter for a new line</div></div></main><aside class="dch-members"><h3>COMMUNITY MEMBERS</h3><div id="dch-member-list"></div></aside></div>';
+   b.innerHTML='<div class="dch dch-app"><aside class="dch-channels"><div class="dch-head"><span>DSMHub Community</span></div><div class="dch-channel-title"><span>CHANNELS</span><button class="dch-add-category" id="dch-add-category" title="Add category" aria-label="Add category" hidden>+</button></div><div class="dch-channel-list" id="dch-channel-list"></div><div class="dch-admin-note" id="dch-admin-note" hidden>Owner tools need the chat database update applied in Supabase.</div><div class="dch-server-info"><strong>DSMHub</strong>Community chat</div></aside><main class="dch-main"><header class="dch-top"><span class="dch-hash">#</span><strong id="dch-channel-title">general</strong><span class="dch-topic" id="dch-topic"></span><span class="dch-top-spacer"></span><span class="dch-connection" id="dch-status">Connecting…</span><span class="dch-user" id="dch-user"></span><span class="dch-role-badge" id="dch-current-role"></span><button class="dch-small-btn" id="dch-signout">Sign out</button></header><div class="dch-messages" id="dch-messages"></div><div class="dch-composer-wrap"><div class="dch-file-queue" id="dch-file-queue"></div><div class="dch-file-error" id="dch-file-error"></div><form class="dch-compose" id="dch-compose"><button class="dch-file-picker" id="dch-file-picker" type="button" title="Attach files" aria-label="Attach files">＋</button><input id="dch-files" type="file" multiple hidden><textarea id="dch-message" rows="1" maxlength="1500" placeholder="Message #general"></textarea><button class="dch-send" title="Send message" aria-label="Send message">➤</button></form><div class="dch-compose-help">Enter to send · Shift+Enter for a new line · attach up to 3 files (15 MB each)</div></div></main><aside class="dch-members"><h3>COMMUNITY MEMBERS</h3><div id="dch-member-list"></div></aside></div>';
   $('#dch-user',b).textContent=profileName;
-  $('#dch-settings',b).onclick=()=>showSetup();
+   $('#dch-current-role',b).textContent=currentRole==='owner'?'OWNER':currentRole==='moderator'?'MOD':'MEMBER';
+   $('#dch-current-role',b).classList.toggle('owner',currentRole==='owner');
+   $('#dch-add-category',b).hidden=currentRole!=='owner';
+   $('#dch-admin-note',b).hidden=roleMap.__setup!==true;
+   $('#dch-file-picker',b).disabled=roleMap.__setup===true;
+   if(roleMap.__setup===true)$('#dch-file-picker',b).title='Apply the chat update in Supabase to enable file uploads';
   $('#dch-signout',b).onclick=async()=>{await clerk.signOut();renderedUserId='';showAuth()};
-  const channelList=$('#dch-channel-list',b);
-  channels.forEach(c=>{const button=mk('<span class="dch-hash">#</span><span>'+c.name+'</span>','button','dch-channel');button.dataset.channel=c.id;button.onclick=()=>selectChannel(c.id);channelList.append(button)});
+   $('#dch-add-category',b).onclick=addCategory;
+   renderChannels();
+   $('#dch-file-picker',b).onclick=()=>$('#dch-files',b).click();
+   $('#dch-files',b).onchange=e=>{queueFiles([...e.target.files||[]]);e.target.value=''};
   $('#dch-compose',b).onsubmit=async e=>{
    e.preventDefault();const input=$('#dch-message',b),body=input.value.trim();
-   if(!body||body.length>1500)return;
-   input.disabled=true;$('#dch-status',b).textContent='Sending…';
-   const result=await db.from('dsmhub_chat_messages').insert({channel:activeChannel,user_id:user.id,username:profileName,body});
-   input.disabled=false;if(result.error){$('#dch-status',b).textContent='Message failed';return}
-   input.value='';$('#dch-status',b).textContent='Connected';input.focus()
+    if((!body&&!pendingFiles.length)||body.length>1500)return;
+    const send=$('.dch-send',b),picker=$('#dch-file-picker',b);input.disabled=true;send.disabled=true;picker.disabled=true;
+    try{
+     const attachments=await uploadPendingFiles(user.id);
+     const result=await db.from('dsmhub_chat_messages').insert({channel:activeChannel,user_id:user.id,username:profileName,body,attachments});
+     if(result.error){if(attachments.length)await db.storage.from('dsmhub-chat-attachments').remove(attachments.map(x=>x.path)).catch(()=>{});throw result.error}
+     input.value='';pendingFiles=[];renderFileQueue();$('#dch-file-error',b).textContent='';$('#dch-status',b).textContent='Connected';input.focus()
+    }catch(error){$('#dch-status',b).textContent='Message failed';$('#dch-file-error',b).textContent=error.message||'Could not send this message.'}
+    finally{input.disabled=false;send.disabled=false;picker.disabled=false}
   };
   $('#dch-message',b).onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#dch-compose',b).requestSubmit()}};
   await selectChannel(activeChannel)
@@ -441,7 +475,7 @@ function chatApp(b){
    }finally{if(enteringUserId===user.id)enteringUserId=''}}
  async function selectChannel(id){
   const request=++channelRequest;
-  const channel=channels.find(x=>x.id===id)||channels[0];activeChannel=channel.id;
+  const channel=channels.find(x=>x.id===id)||channels[0];if(!channel)return;activeChannel=channel.id;
   const q=s=>b.querySelector(s);
   if(!q('.dch-app'))return;
   q('#dch-channel-title').textContent=channel.name;q('#dch-topic').textContent=channel.topic;q('#dch-message').placeholder='Message #'+channel.name;
@@ -456,17 +490,120 @@ function chatApp(b){
   const detail=document.createElement('p');detail.textContent='This is the start of the #'+channel.name+' channel.';
   welcome.append(bubble,heading,detail);box.append(welcome);q('#dch-status').textContent='Loading…';
   let result;
-  try{result=await db.from('dsmhub_chat_messages').select('id,channel,user_id,username,body,created_at').eq('channel',channel.id).order('created_at',{ascending:true}).limit(100)}catch(error){result={data:[],error}}
+  try{result=await db.from('dsmhub_chat_messages').select('id,channel,user_id,username,body,attachments,created_at').eq('channel',channel.id).order('created_at',{ascending:true}).limit(100)}catch(error){result={data:[],error}}
+  if(result.error)try{result=await db.from('dsmhub_chat_messages').select('id,channel,user_id,username,body,created_at').eq('channel',channel.id).order('created_at',{ascending:true}).limit(100);(result.data||[]).forEach(x=>x.attachments=[])}catch(error){result={data:[],error}}
   if(request!==channelRequest||!q('.dch-app'))return;
   if(result.error){q('#dch-status').textContent='Chat unavailable';const err=document.createElement('div');err.className='dch-empty';err.textContent=result.error.message||'Could not load messages.';box.append(err);return}
   for(const message of result.data||[])appendMessage(message);
   try{
-   const next=db.channel('dsmhub-'+channel.id+'-'+(++channelSequence)).on('postgres_changes',{event:'INSERT',schema:'public',table:'dsmhub_chat_messages',filter:'channel=eq.'+channel.id},payload=>appendMessage(payload.new));
+   let next=db.channel('dsmhub-'+channel.id+'-'+(++channelSequence))
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'dsmhub_chat_messages',filter:'channel=eq.'+channel.id},payload=>appendMessage(payload.new))
+    .on('postgres_changes',{event:'DELETE',schema:'public',table:'dsmhub_chat_messages',filter:'channel=eq.'+channel.id},payload=>removeMessageRow(payload.old&&payload.old.id));
+   if(roleMap.__setup!==true)next=next
+    .on('postgres_changes',{event:'*',schema:'public',table:'dsmhub_chat_categories'},()=>loadStructure(true))
+    .on('postgres_changes',{event:'*',schema:'public',table:'dsmhub_chat_channels'},()=>loadStructure(true))
+    .on('postgres_changes',{event:'*',schema:'public',table:'dsmhub_chat_roles'},()=>loadPermissions().then(loadMembers));
    subscription=next;
    next.subscribe((status,error)=>{if(request!==channelRequest)return;const state=q('#dch-status');if(!state)return;if(status==='SUBSCRIBED')state.textContent='Connected';else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){state.textContent='Live updates unavailable';if(error)console.warn('DSMHub chat realtime subscription:',error)}else if(status==='CLOSED')state.textContent='Disconnected';else state.textContent='Connecting…'});
   }catch(error){q('#dch-status').textContent='Live updates unavailable';console.warn('DSMHub chat realtime subscription:',error)}
   loadMembers()
- } function appendMessage(message){
+ }
+ function renderChannels(){
+  const list=$('#dch-channel-list',b);if(!list)return;list.replaceChildren();
+  for(const category of [...categories].sort((a,b)=>a.position-b.position||a.name.localeCompare(b.name))){
+   const section=document.createElement('section');section.className='dch-category';
+   const head=document.createElement('div');head.className='dch-category-head';const title=document.createElement('span');title.textContent=category.name;
+   head.append(title);
+   if(currentRole==='owner'){const add=document.createElement('button');add.type='button';add.className='dch-category-add';add.textContent='+';add.title='Add text channel';add.setAttribute('aria-label','Add text channel to '+category.name);add.onclick=()=>addChannel(category.id);head.append(add)}
+   section.append(head);
+   for(const channel of channels.filter(x=>x.category_id===category.id).sort((a,b)=>a.position-b.position||a.name.localeCompare(b.name))){const button=mk('<span class="dch-hash">#</span><span>'+esc(channel.name)+'</span>','button','dch-channel');button.dataset.channel=channel.id;button.onclick=()=>selectChannel(channel.id);button.classList.toggle('active',activeChannel===channel.id);section.append(button)}
+   list.append(section)
+  }
+ }
+ async function loadStructure(refresh=true){
+  if(!db)return;
+  let categoryResult,channelResult;try{[categoryResult,channelResult]=await Promise.all([db.from('dsmhub_chat_categories').select('id,name,position').order('position'),db.from('dsmhub_chat_channels').select('id,name,topic,category_id,position').order('position')])}catch(error){categories=defaultCategories.map(x=>({...x}));channels=defaultChannels.map(x=>({...x}));if(refresh)renderChannels();return}
+  if(categoryResult.error||channelResult.error){categories=defaultCategories.map(x=>({...x}));channels=defaultChannels.map(x=>({...x}));if(refresh)renderChannels();return}
+  categories=categoryResult.data&&categoryResult.data.length?categoryResult.data:defaultCategories.map(x=>({...x}));
+  channels=channelResult.data&&channelResult.data.length?channelResult.data:defaultChannels.map(x=>({...x}));
+  if(refresh){renderChannels();if(!channels.some(x=>x.id===activeChannel)&&channels.length)selectChannel(channels[0].id)}
+ }
+ async function loadPermissions(){
+  let result;try{result=await db.from('dsmhub_chat_roles').select('user_id,role')}catch(error){result={error}}
+  if(result.error){roleMap={__setup:true};currentRole='member'}
+  else{roleMap=Object.fromEntries((result.data||[]).map(x=>[x.user_id,x.role]));currentRole=roleMap[clerk.user.id]||'member'}
+  const badge=$('#dch-current-role',b);if(badge){badge.textContent=currentRole==='owner'?'OWNER':currentRole==='moderator'?'MOD':'MEMBER';badge.classList.toggle('owner',currentRole==='owner')}
+  const add=$('#dch-add-category',b);if(add)add.hidden=currentRole!=='owner';
+  const note=$('#dch-admin-note',b);if(note)note.hidden=roleMap.__setup!==true;
+  const picker=$('#dch-file-picker',b);if(picker){picker.disabled=roleMap.__setup===true;if(roleMap.__setup===true)picker.title='Apply the chat update in Supabase to enable file uploads'}
+  renderChannels()
+ }
+ async function addCategory(){
+  if(currentRole!=='owner')return;
+  const name=prompt('Category name');if(!name||!name.trim())return;
+  const id=slug(name);if(!id){alert('Use letters or numbers in the category name.');return}
+  const result=await db.from('dsmhub_chat_categories').insert({id,name:name.trim().slice(0,40),position:categories.length});
+  if(result.error){alert('Could not add category: '+result.error.message);return}await loadStructure(true)
+ }
+ async function addChannel(categoryId){
+  if(currentRole!=='owner')return;
+  const name=prompt('Text channel name');if(!name||!name.trim())return;
+  const id=slug(name);if(!id){alert('Use letters or numbers in the channel name.');return}
+  const topic=(prompt('Channel description (optional)')||'').trim().slice(0,120),position=channels.filter(x=>x.category_id===categoryId).length;
+  const result=await db.from('dsmhub_chat_channels').insert({id,name:name.trim().replace(/^#+/,'').slice(0,40),topic,category_id:categoryId,position});
+  if(result.error){alert('Could not add channel: '+result.error.message);return}await loadStructure(true)
+ }
+ function slug(value){return String(value||'').toLowerCase().trim().replace(/^#+/,'').replace(/[^a-z0-9_-]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)}
+ function queueFiles(files){
+  const error=$('#dch-file-error',b);error.textContent='';
+  for(const file of files){if(pendingFiles.length>=3){error.textContent='Attach up to 3 files to one message.';break}if(file.size>15*1024*1024){error.textContent=file.name+' is over the 15 MB file limit.';continue}pendingFiles.push(file)}
+  renderFileQueue()
+ }
+ function renderFileQueue(){
+  const queue=$('#dch-file-queue',b);if(!queue)return;queue.replaceChildren();
+  pendingFiles.forEach((file,index)=>{const chip=document.createElement('div');chip.className='dch-file-chip';const name=document.createElement('span');name.textContent=file.name+' · '+(file.size<1024*1024?Math.ceil(file.size/1024)+' KB':(file.size/1024/1024).toFixed(1)+' MB');const remove=document.createElement('button');remove.type='button';remove.textContent='×';remove.setAttribute('aria-label','Remove '+file.name);remove.onclick=()=>{pendingFiles.splice(index,1);renderFileQueue()};chip.append(name,remove);queue.append(chip)})
+ }
+ async function uploadPendingFiles(userId){
+  const uploaded=[];
+  for(let i=0;i<pendingFiles.length;i++){
+   const file=pendingFiles[i];$('#dch-status',b).textContent='Uploading '+(i+1)+' of '+pendingFiles.length+'…';
+   const safeName=file.name.replace(/[\\/\u0000-\u001f]/g,'_').slice(0,120)||'file';const path=userId+'/'+crypto.randomUUID()+'-'+safeName;
+   const result=await db.storage.from('dsmhub-chat-attachments').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'application/octet-stream'});
+   if(result.error){if(uploaded.length)await db.storage.from('dsmhub-chat-attachments').remove(uploaded.map(x=>x.path)).catch(()=>{});throw result.error}
+   uploaded.push({path,name:file.name.slice(0,180),type:file.type||'application/octet-stream',size:file.size})
+  }
+  return uploaded
+ }
+ function removeMessageRow(id){if(!id)return;const box=$('#dch-messages',b);const row=box&&[...box.querySelectorAll('.dch-message')].find(x=>x.dataset.messageId===String(id));if(row)row.remove()}
+ async function deleteMessage(message){
+  if(roleMap.__setup===true||!(message.user_id===clerk.user.id||currentRole==='owner'||currentRole==='moderator'))return;
+  if(!confirm('Delete this message?'))return;
+  const result=await db.from('dsmhub_chat_messages').delete().eq('id',message.id).select('id');
+  if(result.error){alert('Could not delete this message: '+result.error.message);return}
+  removeMessageRow(message.id);
+  const attachments=Array.isArray(message.attachments)?message.attachments:[];
+  if(attachments.length)await db.storage.from('dsmhub-chat-attachments').remove(attachments.map(x=>x.path)).catch(()=>{})
+ }
+ async function setModerator(member){
+  if(currentRole!=='owner'||member.user_id===clerk.user.id)return;
+  const isMod=roleMap[member.user_id]==='moderator';
+  const result=isMod?await db.from('dsmhub_chat_roles').delete().eq('user_id',member.user_id).eq('role','moderator'):await db.from('dsmhub_chat_roles').upsert({user_id:member.user_id,role:'moderator'},{onConflict:'user_id'});
+  if(result.error){alert('Could not update moderator role: '+result.error.message);return}
+  await loadPermissions();await loadMembers()
+ }
+ async function appendAttachmentList(message,container){
+  const attachments=Array.isArray(message.attachments)?message.attachments:[];if(!attachments.length)return;
+  const wrap=document.createElement('div');wrap.className='dch-attachments';container.append(wrap);
+  for(const attachment of attachments){if(!attachment||typeof attachment.path!=='string')continue;
+   const storage=db.storage.from('dsmhub-chat-attachments'),isImage=/^image\/(png|jpe?g|gif|webp|avif|svg\+xml)$/i.test(attachment.type||'');
+   const preview=isImage?await storage.createSignedUrl(attachment.path,3600):null;
+   const download=await storage.createSignedUrl(attachment.path,3600,{download:true});
+   if(download.error){const unavailable=document.createElement('span');unavailable.className='dch-file-error';unavailable.textContent='Attachment unavailable: '+(attachment.name||'file');wrap.append(unavailable);continue}
+   const link=document.createElement('a');link.className='dch-attachment';link.href=download.data.signedUrl;link.target='_blank';link.rel='noopener noreferrer';link.textContent='↓ '+(attachment.name||'Download file');wrap.append(link);
+   if(isImage&&preview&&!preview.error){const imageLink=document.createElement('a');imageLink.href=preview.data.signedUrl;imageLink.target='_blank';imageLink.rel='noopener noreferrer';const image=document.createElement('img');image.className='dch-attachment-preview';image.src=preview.data.signedUrl;image.alt=attachment.name||'Image attachment';image.loading='lazy';imageLink.append(image);wrap.insertBefore(imageLink,link)}
+  }
+ }
+ function appendMessage(message){
   const box=$('#dch-messages',b);if(!box||!message)return;
   if([...box.querySelectorAll('.dch-message')].some(x=>x.dataset.messageId===String(message.id)))return;
   const row=document.createElement('article');row.className='dch-message';row.dataset.messageId=message.id;
@@ -474,13 +611,15 @@ function chatApp(b){
   const content=document.createElement('div');content.className='dch-msg-content';const head=document.createElement('div');head.className='dch-msg-head';
   const name=document.createElement('strong');name.textContent=message.username||'Unknown';const time=document.createElement('time');const stamp=new Date(message.created_at);time.textContent=Number.isNaN(stamp.getTime())?'':stamp.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
   const body=document.createElement('div');body.className='dch-msg-body';body.textContent=message.body||'';
-  head.append(name,time);content.append(head,body);row.append(avatar,content);box.append(row);box.scrollTop=box.scrollHeight
+  head.append(name,time);
+  if(roleMap.__setup!==true&&(message.user_id===clerk.user.id||currentRole==='owner'||currentRole==='moderator')){const tools=document.createElement('div');tools.className='dch-message-tools';const remove=document.createElement('button');remove.type='button';remove.className='dch-message-delete';remove.textContent='Delete';remove.onclick=()=>deleteMessage(message);tools.append(remove);head.append(tools)}
+  content.append(head,body);row.append(avatar,content);box.append(row);appendAttachmentList(message,content).then(()=>{box.scrollTop=box.scrollHeight}).catch(error=>console.warn('Chat attachment preview:',error));box.scrollTop=box.scrollHeight
  }
  async function loadMembers(){
   const list=$('#dch-member-list',b);if(!list)return;list.innerHTML='';
-  const {data,error}=await db.from('dsmhub_profiles').select('username').order('username').limit(100);
+  const {data,error}=await db.from('dsmhub_profiles').select('user_id,username').order('username').limit(100);
   if(error){list.textContent='Members are unavailable.';return}
-  for(const member of data||[]){const row=document.createElement('div');row.className='dch-member';const avatar=document.createElement('span');avatar.className='dch-avatar';avatar.textContent=String(member.username||'?').slice(0,1).toUpperCase();const name=document.createElement('span');name.className='dch-member-name';name.textContent=member.username;row.append(avatar,name);list.append(row)}
+  for(const member of data||[]){const row=document.createElement('div');row.className='dch-member';const avatar=document.createElement('span');avatar.className='dch-avatar';avatar.textContent=String(member.username||'?').slice(0,1).toUpperCase();const name=document.createElement('span');name.className='dch-member-name';name.textContent=member.username;row.append(avatar,name);const role=roleMap[member.user_id];if(role==='owner'||role==='moderator'){const badge=document.createElement('span');badge.className='dch-role-badge'+(role==='owner'?' owner':'');badge.textContent=role==='owner'?'OWNER':'MOD';row.append(badge)}if(currentRole==='owner'&&member.user_id!==clerk.user.id){const tools=document.createElement('span');tools.className='dch-member-tools';const manage=document.createElement('button');manage.type='button';manage.className='dch-manage-member';manage.textContent=role==='moderator'?'Remove mod':'Make mod';manage.onclick=()=>setModerator(member);tools.append(manage);row.append(tools)}list.append(row)}
  }
  if(config.clerkKey&&config.supabaseKey&&config.supabaseUrl)connect();else showSetup()
 }
