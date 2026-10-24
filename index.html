@@ -303,7 +303,7 @@ function openApp(id,custom){const a=custom||apps.find(x=>x.id===id);
  const tb=mk(`${glyph(a,1)}<span>${a.n}</span>${a.fs?'<button class="fs" title="Fullscreen" aria-label="Fullscreen"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>':''}<button class="m" title="Minimize">–</button><button class="mx" title="Maximize">▢</button><button class="x" title="Close">✕</button>`,'div','tb');
  const body=mk(null,'div','body');w.append(tb,body,mk(null,'div','rs'));$('#desk').append(w);
  const btn=mk(glyph(a)+`<em>${a.n}</em>`,'button','tbtn on');$('#tasks').append(btn);
- const o={w,btn,a};wins.push(o);a.r(body);focus(o);
+ const o={w,btn,a};wins.push(o);a.r(body,o);focus(o);
  const clamp=()=>{const r=$('#desk').getBoundingClientRect();w.style.left=Math.min(Math.max(parseFloat(w.style.left),-w.offsetWidth+80),r.width-60)+'px';w.style.top=Math.min(Math.max(parseFloat(w.style.top),0),r.height-36)+'px'};
  tb.onpointerdown=e=>{if(e.target.closest('button')||w.classList.contains('max'))return;focus(o);const sx=e.clientX-w.offsetLeft,sy=e.clientY-w.offsetTop;tb.setPointerCapture(e.pointerId);tb.style.cursor='grabbing';
   tb.onpointermove=ev=>{w.style.left=(ev.clientX-sx)+'px';w.style.top=(ev.clientY-sy)+'px'};
@@ -313,7 +313,7 @@ function openApp(id,custom){const a=custom||apps.find(x=>x.id===id);
  w.onpointerdown=()=>focus(o);
  $('.m',w).onclick=()=>minim(o,true);
  const fb=$('.fs',w);if(fb)fb.onclick=()=>{const cf=document.fullscreenElement||document.webkitFullscreenElement,rq=w.requestFullscreen||w.webkitRequestFullscreen;if(cf===w)(document.exitFullscreen||document.webkitExitFullscreen).call(document);else if(rq)rq.call(w);else w.classList.toggle('max')};$('.mx',w).onclick=()=>w.classList.toggle('max');tb.ondblclick=e=>{if(!e.target.closest('button'))w.classList.toggle('max')};
- $('.x',w).onclick=()=>{w.remove();btn.remove();wins.splice(wins.indexOf(o),1)};
+ $('.x',w).onclick=()=>{if(o.onclose)try{o.onclose()}catch(e){}w.remove();btn.remove();wins.splice(wins.indexOf(o),1)};
  btn.onclick=()=>{if(w.classList.contains('min')||sel!==o)focus(o);else minim(o,true)}}
 function focus(o){o.w.classList.remove('min');o.w.style.zIndex=++z;sel=o;wins.forEach(x=>x.btn.classList.toggle('act',x===o))}
 function minim(o,v){o.w.classList.toggle('min',v);o.btn.classList.remove('act');if(sel===o)sel=null}
@@ -379,6 +379,64 @@ function chatLoadScript(name,url,publishableKey){
  });
  return window.__dsmhubChatScripts[name]
 }
+// ---- shared DSMHub account (same Clerk + Supabase project as chat) ----
+// Used by anything that needs to know who is signed in, without requiring
+// the Chat window to be open. Lazily loads Clerk + Supabase the same way
+// chatApp() does, and reuses the same public keys from DSMHUB_CHAT_CONFIG.
+let dsmAccountPromise=null;
+function dsmEnsureAccount(){
+ if(dsmAccountPromise)return dsmAccountPromise;
+ dsmAccountPromise=(async()=>{
+  const config=chatReadConfig();
+  if(!config.clerkKey||!config.supabaseKey||!config.supabaseUrl)return null;
+  try{
+   const domain=atob(config.clerkKey.split('_')[2]).replace(/\$$/,'');
+   if(!/^[a-z0-9.-]+$/i.test(domain))return null;
+   if(!window.supabase||!window.supabase.createClient)await chatLoadScript('supabase','https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js');
+   if(!window.Clerk){
+    await chatLoadScript('clerk-ui','https://'+domain+'/npm/@clerk/ui@1/dist/ui.browser.js');
+    await chatLoadScript('clerk-sdk','https://'+domain+'/npm/@clerk/clerk-js@6/dist/clerk.browser.js',config.clerkKey)
+   }
+   if(!window.Clerk.loaded)await window.Clerk.load({ui:{ClerkUI:window.__internal_ClerkUICtor}});
+   const clerk=window.Clerk;
+   const db=window.supabase.createClient(config.supabaseUrl,config.supabaseKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false},accessToken:async()=>clerk&&clerk.session?await clerk.session.getToken():null});
+   return {clerk,db}
+  }catch(e){console.warn('[account] could not connect',e);return null}
+ })();
+ return dsmAccountPromise
+}
+function dsmCurrentUserId(){try{return window.Clerk&&window.Clerk.user?window.Clerk.user.id:null}catch(e){return null}}
+
+// ---- game save sync (self-hosted games only; see chat message for why
+// library games loaded from other sites can't be synced the same way) ----
+async function gsLoad(gameId){
+ const acc=await dsmEnsureAccount();const uid=dsmCurrentUserId();
+ if(!acc||!uid)return null;
+ try{
+  const{data,error}=await acc.db.from('game_saves').select('data').eq('user_id',uid).eq('game_id',gameId).maybeSingle();
+  if(error){console.warn('[save-sync] load failed',error);return null}
+  return data?data.data:null
+ }catch(e){console.warn('[save-sync] load failed',e);return null}
+}
+async function gsSave(gameId,kv){
+ if(!kv||!Object.keys(kv).length)return;
+ const acc=await dsmEnsureAccount();const uid=dsmCurrentUserId();
+ if(!acc||!uid)return;
+ try{
+  const{error}=await acc.db.from('game_saves').upsert({user_id:uid,game_id:gameId,data:kv,updated_at:new Date().toISOString()});
+  if(error)console.warn('[save-sync] save failed',error)
+ }catch(e){console.warn('[save-sync] save failed',e)}
+}
+function gsReadStorage(fr){const out={};try{const ls=fr.contentWindow.localStorage;for(let i=0;i<ls.length;i++){const k=ls.key(i);out[k]=ls.getItem(k)}}catch(e){}return out}
+function gsInject(html,kv){if(!kv||!Object.keys(kv).length)return html;const boot='<script>(function(){var d='+JSON.stringify(kv)+';for(var k in d){try{localStorage.setItem(k,d[k])}catch(e){}}})();</scr'+'ipt>';return /<head[^>]*>/i.test(html)?html.replace(/<head[^>]*>/i,m=>m+boot):boot+html}
+async function attachSaveSync(fr,gameId,html){
+ const kv=await gsLoad(gameId);
+ fr.srcdoc=gsInject(html,kv);
+ let timer=null;const flush=()=>gsSave(gameId,gsReadStorage(fr));
+ fr.addEventListener('load',()=>{timer=setInterval(flush,30000)});
+ return()=>{if(timer)clearInterval(timer);flush()}
+}
+
 function chatApp(b){
  let config=chatReadConfig(),clerk=null,db=null,activeChannel='general',subscription=null,renderedUserId='',profileName='',busy=false,authListener=null,enteringUserId='',channelRequest=0,channelSequence=0,currentRole='member',roleMap={},categories=[],pendingFiles=[];
  const defaultCategories=[{id:'text',name:'Text Channels',position:0}];
@@ -641,7 +699,7 @@ function gamesApp(b){
  async function loadAll(){const src=(await glist().catch(()=>[])).map(f=>({f:gp(f)}));
   tabs=await Promise.all(src.map(async s=>{const nm=s.f.split('/').pop();try{if(isEnc(s.f)){const r=await fetch(s.f);if(!r.ok)throw 0;const o=await gdec(gcode,await r.arrayBuffer());return {...s,n:o.n||nm,h:o.h,t:o.t}}return {...s,n:nm}}catch(e){return {...s,n:nm,bad:1}}}));
   tabs.sort((x,y)=>x.n.localeCompare(y.n))}
- function playGame(t){openApp('games',{id:'games',fs:true,n:t.n,icon:'games',w:860,h:600,r:body=>{const fr=document.createElement('iframe');fr.title=t.n;fr.allow='fullscreen; autoplay; gamepad; pointer-lock';fr.setAttribute('allowfullscreen','');fr.style.cssText='position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff';if(t.h!=null)fr.srcdoc=t.h;else fr.src=t.f;body.append(fr)}})}
+ function playGame(t){const gid=(t.f.split('/').pop()||t.n).replace(/\.[^.]+$/,'');openApp('games',{id:'games',fs:true,n:t.n,icon:'games',w:860,h:600,r:(body,win)=>{const fr=document.createElement('iframe');fr.title=t.n;fr.allow='fullscreen; autoplay; gamepad; pointer-lock';fr.setAttribute('allowfullscreen','');fr.style.cssText='position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff';body.append(fr);if(t.h!=null){attachSaveSync(fr,gid,t.h).then(stop=>{win.onclose=stop})}else fr.src=t.f}})}
  function renderGrid(){gr.innerHTML='';const k=q.value.trim().toLowerCase(),list=tabs.filter(t=>t.n.toLowerCase().includes(k));
   if(!list.length){gr.append(mk(tabs.length?'No games match your search.':'No games yet. Encrypt them with encrypt.html, upload them to the games folder, and list them in games/index.json.','p','gn'));return}
   list.forEach(t=>{const ok=t.t&&!t.bad,el=mk(null,'button','tile'+(ok?'':' ph')+(t.bad?' bad':''));el.title=t.bad?'Could not load this game. Check the path and the code.':t.n;
