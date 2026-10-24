@@ -497,9 +497,9 @@ function chatApp(b){
   for(const message of result.data||[])appendMessage(message);
   try{
    let next=db.channel('dsmhub-'+channel.id+'-'+(++channelSequence))
-    .on('postgres_changes',{event:'INSERT',schema:'public',table:'dsmhub_chat_messages',filter:'channel=eq.'+channel.id},payload=>appendMessage(payload.new))
-    .on('postgres_changes',{event:'DELETE',schema:'public',table:'dsmhub_chat_messages',filter:'channel=eq.'+channel.id},payload=>removeMessageRow(payload.old&&payload.old.id));
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'dsmhub_chat_messages',filter:'channel=eq.'+channel.id},payload=>appendMessage(payload.new));
    if(roleMap.__setup!==true)next=next
+    .on('postgres_changes',{event:'DELETE',schema:'public',table:'dsmhub_chat_messages',filter:'channel=eq.'+channel.id},payload=>removeMessageRow(payload.old&&payload.old.id))
     .on('postgres_changes',{event:'*',schema:'public',table:'dsmhub_chat_categories'},()=>loadStructure(true))
     .on('postgres_changes',{event:'*',schema:'public',table:'dsmhub_chat_channels'},()=>loadStructure(true))
     .on('postgres_changes',{event:'*',schema:'public',table:'dsmhub_chat_roles'},()=>loadPermissions().then(loadMembers));
