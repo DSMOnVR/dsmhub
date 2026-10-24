@@ -234,7 +234,7 @@ img.g,.tbtn img.g{border-radius:23%;display:block;object-fit:contain;box-shadow:
 @media(max-width:930px){.dch{grid-template-columns:210px minmax(0,1fr)}.dch-members{display:none}}
 @media(max-width:620px){.dch{grid-template-columns:minmax(0,1fr)}.dch-channels{display:none}.dch-messages{padding:12px 9px}.dch-composer-wrap{padding:7px 9px 10px}.dch-top{padding:0 9px}.dch-topic{display:none}}
 
-</style>
+.sg{height:100%;display:flex;flex-direction:column;padding:12px;gap:10px;overflow:auto}.sg-form{display:flex;flex-direction:column;gap:6px;background:var(--panel2);border-radius:10px;padding:10px}.sg-title,.sg-body{width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;outline:none;resize:vertical}.sg-title:focus,.sg-body:focus{border-color:var(--accent)}.sg-post{align-self:flex-end}.sg-msg{color:#f87171;min-height:1.2em;margin:0}.sg-list{display:flex;flex-direction:column;gap:8px}.sg-card{background:var(--panel2);border-radius:10px;padding:10px}.sg-card-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.sg-by{color:var(--dim);font-size:11px;white-space:nowrap}.sg-card p{margin:4px 0 8px;white-space:pre-wrap}.sg-card-f{display:flex;gap:8px;align-items:center}.sg-vote{border:1px solid var(--line);background:none;color:var(--text);border-radius:999px;padding:4px 10px;cursor:pointer;font:inherit}.sg-vote.on{background:#87cf3e30;border-color:var(--accent);color:var(--accent)}.sg-del{border:0;background:none;color:#f87171;cursor:pointer;font:inherit}</style>
 </head>
 <body>
 <div id="lock" role="button" tabindex="0" aria-label="Unlock"><div id="lt">00:00 AM</div><div id="ld"></div><div id="lc">Made By DSM</div><div id="lh">Click or press any key</div></div>
@@ -255,11 +255,12 @@ const apps=[
  {id:'calc',n:'Calculator',icon:'calc',w:290,h:380,r:calcApp},
  {id:'chat',n:'Chat',icon:'chat',w:1120,h:720,r:chatApp},
  {id:'games',n:'Games',icon:'games',w:880,h:580,r:gamesApp},
+{id:'suggest',n:'Suggestions',icon:'suggest',w:560,h:620,r:suggestApp},
 ];
 const wins=[];let z=10,n=0,sel=null;
 function mk(t,tag='div',cls=''){const x=document.createElement(tag);x.className=cls;if(t!=null)x.innerHTML=t;return x}
 
-const IC={"files":["#ffb84d","#f0821e","<path d=\"M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/>"],"notes":["#5ab0ff","#2f6bdc","<path d=\"M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z\"/><path d=\"M14 3v5h5M9 13h6M9 17h4\"/>"],"web":["#38bdf8","#6366f1","<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18\"/>"],"calc":["#a78bfa","#6d3fd4","<rect x=\"5\" y=\"3\" width=\"14\" height=\"18\" rx=\"2\"/><path d=\"M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01\"/>"],"chat":["#7289da","#4752c4","<path d=\"M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-6l-5 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z\"/><path d=\"M7 10h10M7 13h7\"/>"],"games":["#f472b6","#e11d48","<path d=\"M6 11h4M8 9v4M15 12h.01M18 10h.01\"/><path d=\"M17.3 5H6.7a4 4 0 0 0-4 3.6C2.6 9.4 2 14.5 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.4-1.4a2 2 0 0 1 1.4-.6h4.4a2 2 0 0 1 1.4.6L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.5-.6-6.600-.7-7.300A4 4 0 0 0 17.3 5z\"/>"],"set":["#34d399","#0e8f6a","<path d=\"M4 7h10M18 7h2M4 17h2M10 17h10\"/><circle cx=\"16\" cy=\"7\" r=\"2\"/><circle cx=\"8\" cy=\"17\" r=\"2\"/>"],"start":["#a3e635","#3f9b1c","<path d=\"M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4\"/>"]};
+const IC={"files":["#ffb84d","#f0821e","<path d=\"M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/>"],"notes":["#5ab0ff","#2f6bdc","<path d=\"M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z\"/><path d=\"M14 3v5h5M9 13h6M9 17h4\"/>"],"web":["#38bdf8","#6366f1","<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18\"/>"],"calc":["#a78bfa","#6d3fd4","<rect x=\"5\" y=\"3\" width=\"14\" height=\"18\" rx=\"2\"/><path d=\"M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01\"/>"],"chat":["#7289da","#4752c4","<path d=\"M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-6l-5 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z\"/><path d=\"M7 10h10M7 13h7\"/>"],"games":["#f472b6","#e11d48","<path d=\"M6 11h4M8 9v4M15 12h.01M18 10h.01\"/><path d=\"M17.3 5H6.7a4 4 0 0 0-4 3.6C2.6 9.4 2 14.5 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.4-1.4a2 2 0 0 1 1.4-.6h4.4a2 2 0 0 1 1.4.6L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.5-.6-6.600-.7-7.300A4 4 0 0 0 17.3 5z\"/>"],"set":["#34d399","#0e8f6a","<path d=\"M4 7h10M18 7h2M4 17h2M10 17h10\"/><circle cx=\"16\" cy=\"7\" r=\"2\"/><circle cx=\"8\" cy=\"17\" r=\"2\"/>"],"start":["#a3e635","#3f9b1c","<path d=\"M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4\"/>"],"suggest":["#fbbf24","#d97706","<path d=\"M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.6.5 1.1 1.3 1.2 2.2h4.8c.1-.9.6-1.7 1.2-2.2A6 6 0 0 0 12 3z\"/>"]};
 const mix=(h,k)=>'#'+[1,3,5].map(i=>Math.round(parseInt(h.substr(i,2),16)*(1-k)+255*k).toString(16).padStart(2,'0')).join('');
 function builtin(n){const[a,b,p]=IC[n],d=theme==='dark';return 'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${d?a:mix(a,.82)}"/><stop offset="1" stop-color="${d?b:mix(b,.72)}"/></linearGradient></defs><rect x=".5" y=".5" width="63" height="63" rx="14.5" fill="url(#g)"/><g transform="translate(16 16) scale(1.333)" fill="none" stroke="${d?'#fff':b}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</g></svg>`)}
 document.addEventListener('error',e=>{const i=e.target;if(!i||i.tagName!=='IMG')return;
@@ -362,6 +363,59 @@ function setApp(b){
  const list=()=>{const l=$('#sl',b);l.innerHTML='';links.forEach((x,i)=>{const r=mk(`<span>${esc(x.n)}</span>`,'div','row');const d=mk('Remove','button','btn alt');d.onclick=()=>{links.splice(i,1);saveLinks();drawIcons();list()};r.append(d);l.append(r)})};
  $('#sa',b).onclick=()=>{const n=$('#sn',b).value.trim();let u=$('#su',b).value.trim();const ic=$('#si',b).value.trim();if(!n||!u)return;if(!/^https?:\/\//.test(u))u='https://'+u;links.push({n,u,i:ic});saveLinks();drawIcons();list();['#sn','#su','#si'].forEach(q=>$(q,b).value='')};
  list()}
+
+// ---- suggestions board (what should we add to DSMHub) ----
+function suggestApp(b){
+ b.innerHTML='<div class="sg"><div class="sg-form"><input class="sg-title" placeholder="Title" maxlength="80"><textarea class="sg-body" placeholder="What should DSMHub add?" rows="3" maxlength="600"></textarea><button class="btn sg-post">Post suggestion</button><p class="sg-msg"></p></div><div class="sg-list">Loading…</div></div>';
+ const titleEl=$('.sg-title',b),bodyEl=$('.sg-body',b),postBtn=$('.sg-post',b),msg=$('.sg-msg',b),list=$('.sg-list',b);
+ let acc=null,uid=null,myVotes=new Set();
+ function card(row){
+  const el=mk(null,'div','sg-card');
+  const mine=uid&&row.user_id===uid;
+  el.innerHTML=`<div class="sg-card-h"><strong>${esc(row.title)}</strong><span class="sg-by">by ${esc(row.username||'someone')}</span></div><p>${esc(row.body)}</p><div class="sg-card-f"><button class="sg-vote${myVotes.has(row.id)?' on':''}">\u25b2 <span>${row.votes||0}</span></button>${mine?'<button class="sg-del">Delete</button>':''}</div>`;
+  const vb=$('.sg-vote',el);
+  vb.onclick=async()=>{
+   if(!uid){msg.textContent='Sign in through Chat first.';return}
+   const have=myVotes.has(row.id);
+   vb.disabled=true;
+   try{
+    if(have){await acc.db.from('suggestion_votes').delete().eq('suggestion_id',row.id).eq('user_id',uid);myVotes.delete(row.id);row.votes=(row.votes||1)-1}
+    else{await acc.db.from('suggestion_votes').insert({suggestion_id:row.id,user_id:uid});myVotes.add(row.id);row.votes=(row.votes||0)+1}
+    vb.classList.toggle('on',myVotes.has(row.id));vb.querySelector('span').textContent=row.votes
+   }catch(e){msg.textContent='Could not update your vote.'}
+   vb.disabled=false
+  };
+  const db2=$('.sg-del',el);if(db2)db2.onclick=async()=>{if(!confirm('Delete this suggestion?'))return;try{await acc.db.from('suggestions').delete().eq('id',row.id);el.remove()}catch(e){msg.textContent='Could not delete.'}};
+  return el
+ }
+ async function refresh(){
+  list.innerHTML='Loading…';
+  if(!acc){list.innerHTML='<p class="sg-msg">Sign in through Chat to see and post suggestions.</p>';return}
+  try{
+   const{data,error}=await acc.db.from('suggestions').select('id,user_id,username,title,body,votes').order('votes',{ascending:false}).order('created_at',{ascending:false}).limit(200);
+   if(error)throw error;
+   myVotes=new Set();
+   if(uid){const mv=await acc.db.from('suggestion_votes').select('suggestion_id').eq('user_id',uid);if(!mv.error)myVotes=new Set((mv.data||[]).map(x=>x.suggestion_id))}
+   list.innerHTML='';
+   if(!data||!data.length){list.append(mk('No suggestions yet. Be the first.','p','sg-msg'));return}
+   data.forEach(row=>list.append(card(row)))
+  }catch(e){list.innerHTML='<p class="sg-msg">Could not load suggestions.</p>'}
+ }
+ postBtn.onclick=async()=>{
+  const title=titleEl.value.trim(),body=bodyEl.value.trim();
+  if(!title||!body){msg.textContent='Add a title and a description.';return}
+  if(!acc||!uid){msg.textContent='Sign in through Chat first.';return}
+  postBtn.disabled=true;msg.textContent='Posting\u2026';
+  try{
+   const username=(window.Clerk&&window.Clerk.user&&window.Clerk.user.username)||'someone';
+   const{error}=await acc.db.from('suggestions').insert({user_id:uid,username,title,body});
+   if(error)throw error;
+   titleEl.value='';bodyEl.value='';msg.textContent='';await refresh()
+  }catch(e){msg.textContent='Could not post your suggestion.'}
+  postBtn.disabled=false
+ };
+ (async()=>{acc=await dsmEnsureAccount();uid=dsmCurrentUserId();await refresh()})()
+}
 
 // ---- DSMHub community chat, authenticated with Clerk and stored in Supabase ----
 const DSMHUB_CHAT_DEFAULT_URL='https://vtqfeqwbuvfepjpoavrc.supabase.co';
