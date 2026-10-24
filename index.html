@@ -361,7 +361,7 @@ function chatLoadScript(name,url,publishableKey){
  return window.__dsmhubChatScripts[name]
 }
 function chatApp(b){
- let config=chatReadConfig(),clerk=null,db=null,activeChannel='general',subscription=null,renderedUserId='',profileName='',busy=false,authListener=null;
+ let config=chatReadConfig(),clerk=null,db=null,activeChannel='general',subscription=null,renderedUserId='',profileName='',busy=false,authListener=null,enteringUserId='',channelRequest=0,channelSequence=0;
  const channels=[{id:'general',name:'general',topic:'The place for anything DSMHub.'},{id:'games',name:'games',topic:'Talk about games and what you are playing.'},{id:'music',name:'music',topic:'Share what you are listening to.'},{id:'help',name:'help',topic:'Ask the community for help.'}];
  const showSetup=(problem='')=>{
   b.innerHTML='<section class="dch-gate"><div class="dch-card"><div class="dch-brand"><span class="dch-brand-mark">D</span><span>DSMHub Community</span></div><h2>Connect your chat</h2><p>Enter the public keys for the Clerk and Supabase projects already set up for DSMHub.</p><label class="dch-field" for="dch-clerk-key">Clerk publishable key</label><input class="dch-input" id="dch-clerk-key" autocomplete="off" placeholder="pk_test_… or pk_live_…"><label class="dch-field" for="dch-supabase-url">Supabase project URL</label><input class="dch-input" id="dch-supabase-url" autocomplete="url"><label class="dch-field" for="dch-supabase-key">Supabase publishable key</label><input class="dch-input" id="dch-supabase-key" autocomplete="off" placeholder="sb_publishable_… or anon public key"><button class="dch-primary dch-setup-submit" id="dch-connect">Save and continue</button><div class="dch-error" id="dch-error"></div><div class="dch-note">These are public browser keys. Never enter a Clerk secret key or Supabase secret/service-role key. Values are saved only in this browser.</div></div></section>';
@@ -379,11 +379,11 @@ function chatApp(b){
  };
  const showAuth=(problem='')=>{
   if(!b.isConnected)return;
-  if(subscription&&db){db.removeChannel(subscription).catch(()=>{});subscription=null}
+  channelRequest++;const previous=subscription;subscription=null;if(previous&&db)db.removeChannel(previous).catch(()=>{})
   renderedUserId='';
   b.innerHTML='<section class="dch-gate"><div class="dch-card"><div class="dch-brand"><span class="dch-brand-mark">D</span><span>DSMHub Community</span></div><h2>Sign in to chat</h2><p>Use your DSMHub username account to join the community.</p><div class="dch-auth" id="dch-auth"></div><div class="dch-error" id="dch-error"></div><div class="dch-note">New here? Use the create-account link in the sign-in box. DSMHub accounts use usernames.</div></div></section>';
   $('#dch-error',b).textContent=problem;
-  try{clerk.mountSignIn($('#dch-auth',b),{withSignUp:true})}catch(e){$('#dch-error',b).textContent='Could not show the sign-in form: '+e.message}
+  try{clerk.mountSignIn($('#dch-auth',b),{withSignUp:true,signInFallbackRedirectUrl:location.href,signUpFallbackRedirectUrl:location.href})}catch(e){$('#dch-error',b).textContent='Could not show the sign-in form: '+e.message}
  };
  async function connect(){
   if(busy||!b.isConnected)return;busy=true;
@@ -407,7 +407,11 @@ function chatApp(b){
  }
  async function enterWorkspace(){
   if(!b.isConnected||!clerk||!clerk.user)return;
-  const user=clerk.user;if(renderedUserId===user.id&&$('.dch-app',b))return;
+  const user=clerk.user;
+   if(renderedUserId===user.id&&$('.dch-app',b))return;
+   if(enteringUserId===user.id)return;
+   enteringUserId=user.id;
+   try{
   const username=String(user.username||'').trim();
   if(!username){showAuth('Your Clerk account needs a username.');return}
   try{
@@ -433,26 +437,36 @@ function chatApp(b){
   };
   $('#dch-message',b).onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#dch-compose',b).requestSubmit()}};
   await selectChannel(activeChannel)
- }
+ 
+   }finally{if(enteringUserId===user.id)enteringUserId=''}}
  async function selectChannel(id){
+  const request=++channelRequest;
   const channel=channels.find(x=>x.id===id)||channels[0];activeChannel=channel.id;
-  if(!$('.dch-app',b))return;
-  $('#dch-channel-title',b).textContent=channel.name;$('#dch-topic',b).textContent=channel.topic;$('#dch-message',b).placeholder='Message #'+channel.name;
+  const q=s=>b.querySelector(s);
+  if(!q('.dch-app'))return;
+  q('#dch-channel-title').textContent=channel.name;q('#dch-topic').textContent=channel.topic;q('#dch-message').placeholder='Message #'+channel.name;
   b.querySelectorAll('.dch-channel').forEach(x=>x.classList.toggle('active',x.dataset.channel===channel.id));
-  if(subscription&&db){await db.removeChannel(subscription).catch(()=>{});subscription=null}
-  const box=$('#dch-messages',b);box.innerHTML='';
+  const previous=subscription;subscription=null;
+  if(previous&&db)await db.removeChannel(previous).catch(()=>{});
+  if(request!==channelRequest||!q('.dch-app'))return;
+  const box=q('#dch-messages');box.innerHTML='';
   const welcome=document.createElement('div');welcome.className='dch-welcome';
   const bubble=document.createElement('div');bubble.className='dch-hash';bubble.textContent='#';
   const heading=document.createElement('h2');heading.textContent='Welcome to #'+channel.name;
   const detail=document.createElement('p');detail.textContent='This is the start of the #'+channel.name+' channel.';
-  welcome.append(bubble,heading,detail);box.append(welcome);$('#dch-status',b).textContent='Loading…';
-  const {data,error}=await db.from('dsmhub_chat_messages').select('id,channel,user_id,username,body,created_at').eq('channel',channel.id).order('created_at',{ascending:true}).limit(100);
-  if(error){$('#dch-status',b).textContent='Chat unavailable';const err=document.createElement('div');err.className='dch-empty';err.textContent=error.message||'Could not load messages.';box.append(err);return}
-  for(const message of data||[])appendMessage(message);
-  subscription=db.channel('dsmhub-'+channel.id).on('postgres_changes',{event:'INSERT',schema:'public',table:'dsmhub_chat_messages',filter:'channel=eq.'+channel.id},payload=>appendMessage(payload.new)).subscribe(status=>{if($('#dch-status',b))$('#dch-status',b).textContent=status==='SUBSCRIBED'?'Connected':status==='CHANNEL_ERROR'?'Reconnecting…':'Connecting…'});
+  welcome.append(bubble,heading,detail);box.append(welcome);q('#dch-status').textContent='Loading…';
+  let result;
+  try{result=await db.from('dsmhub_chat_messages').select('id,channel,user_id,username,body,created_at').eq('channel',channel.id).order('created_at',{ascending:true}).limit(100)}catch(error){result={data:[],error}}
+  if(request!==channelRequest||!q('.dch-app'))return;
+  if(result.error){q('#dch-status').textContent='Chat unavailable';const err=document.createElement('div');err.className='dch-empty';err.textContent=result.error.message||'Could not load messages.';box.append(err);return}
+  for(const message of result.data||[])appendMessage(message);
+  try{
+   const next=db.channel('dsmhub-'+channel.id+'-'+(++channelSequence)).on('postgres_changes',{event:'INSERT',schema:'public',table:'dsmhub_chat_messages',filter:'channel=eq.'+channel.id},payload=>appendMessage(payload.new));
+   subscription=next;
+   next.subscribe((status,error)=>{if(request!==channelRequest)return;const state=q('#dch-status');if(!state)return;if(status==='SUBSCRIBED')state.textContent='Connected';else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){state.textContent='Live updates unavailable';if(error)console.warn('DSMHub chat realtime subscription:',error)}else if(status==='CLOSED')state.textContent='Disconnected';else state.textContent='Connecting…'});
+  }catch(error){q('#dch-status').textContent='Live updates unavailable';console.warn('DSMHub chat realtime subscription:',error)}
   loadMembers()
- }
- function appendMessage(message){
+ } function appendMessage(message){
   const box=$('#dch-messages',b);if(!box||!message)return;
   if([...box.querySelectorAll('.dch-message')].some(x=>x.dataset.messageId===String(message.id)))return;
   const row=document.createElement('article');row.className='dch-message';row.dataset.messageId=message.id;
