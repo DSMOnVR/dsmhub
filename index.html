@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DSMHub</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0d0f;--panel:#17181c;--panel2:#202228;--line:#2c2e35;--text:#f1f2f4;--dim:#9a9ca6;--accent:#87cf3e;--wall:radial-gradient(ellipse at 55% 45%,#2a2b31 0%,#141518 55%,#08080a 100%);box-sizing:border-box}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font:13px/1.35 Poppins,system-ui,sans-serif;user-select:none}
+#desk{position:fixed;inset:0 0 48px 0;background:var(--wall);background-size:cover}
+#logo{position:absolute;left:50%;top:46%;width:240px;height:240px;transform:translate(-50%,-50%) rotate(-18deg);border-radius:50%;border:16px solid #d8d9dd;box-shadow:0 20px 60px #000a,inset 0 0 20px #0008;opacity:.9;display:grid;place-items:center;pointer-events:none}
+#logo b{font-size:96px;color:#d8d9dd;letter-spacing:-6px}
+#icons{position:absolute;left:8px;top:8px;bottom:8px;display:grid;grid-template-columns:repeat(2,84px);grid-auto-rows:92px;grid-auto-flow:row;align-content:start;gap:0}
+.ic{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px;border-radius:6px;cursor:default;text-align:center;font-size:11.5px;text-shadow:0 1px 3px #000}
+.ic:hover{background:#ffffff14}.ic.sel{background:#87cf3e30;outline:1px solid #87cf3e66}
+.g{width:44px;height:44px;border-radius:11px;display:grid;place-items:center;font-size:24px;box-shadow:0 2px 6px #0007}
+.win{position:absolute;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 14px 44px #000b;display:flex;flex-direction:column;overflow:hidden;min-width:260px;min-height:160px}
+.win.max{inset:0 0 0 0!important;width:auto!important;height:auto!important;border-radius:0}
+.win.min{display:none}
+.tb{display:flex;align-items:center;gap:8px;padding:0 6px 0 12px;height:36px;background:var(--panel2);cursor:grab;flex:none}
+.tb span{flex:1;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tb button{width:28px;height:24px;border:0;border-radius:5px;background:none;color:var(--dim);font-size:14px;cursor:pointer}
+.tb button:hover{background:#ffffff1c;color:var(--text)}.tb .x:hover{background:#e5484d;color:#fff}
+.body{flex:1;overflow:auto;position:relative;min-height:0}
+.rs{position:absolute;right:0;bottom:0;width:16px;height:16px;cursor:nwse-resize}
+#bar{position:fixed;left:0;right:0;bottom:0;height:48px;padding-bottom:env(safe-area-inset-bottom,0px);background:var(--panel);border-top:1px solid var(--line);display:flex;align-items:center;gap:2px;padding-left:6px;padding-right:6px;z-index:9999}
+.tbtn{height:40px;min-width:40px;padding:0 8px;border:0;border-radius:7px;background:none;color:var(--text);display:flex;align-items:center;gap:7px;cursor:pointer;font:inherit;position:relative}
+.tbtn:hover{background:#ffffff14}
+.tbtn.on::after{content:"";position:absolute;left:8px;right:8px;bottom:2px;height:3px;border-radius:2px;background:var(--accent)}
+.tbtn.act{background:#ffffff1a}
+.tbtn .g{width:28px;height:28px;font-size:17px;border-radius:7px;box-shadow:none}
+#tasks{display:flex;gap:2px;flex:1;overflow:hidden}
+#tasks .tbtn{max-width:170px}#tasks .tbtn em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+#tray{display:flex;align-items:center;gap:12px;color:var(--dim);padding-right:2px}
+#clk{text-align:right;line-height:1.15;color:var(--text);font-size:12.5px}#clk small{display:block;color:var(--dim);font-size:10.5px}
+#sd{width:16px;height:22px;border:1.5px solid var(--dim);border-radius:3px;background:none;cursor:pointer}
+#sd:hover{border-color:var(--text)}
+#menu{position:fixed;left:6px;bottom:54px;width:340px;max-height:70vh;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 14px 44px #000b;display:none;flex-direction:column;z-index:9998;overflow:hidden}
+#menu.open{display:flex}
+#menu input{margin:10px;padding:9px 12px;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--text);font:inherit;outline:none;user-select:text}
+#menu input:focus{border-color:var(--accent)}
+#list{overflow:auto;padding:0 6px 8px}
+#list .tbtn{width:100%;height:44px}
+.pad{padding:14px}
+textarea.np{width:100%;height:100%;border:0;resize:none;background:#111215;color:var(--text);font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;padding:12px;outline:none;user-select:text}
+.calc{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:10px;height:100%;grid-auto-rows:1fr}
+.calc .scr{grid-column:1/-1;background:#0e0f12;border-radius:8px;padding:8px 12px;text-align:right;font-size:26px;display:flex;align-items:flex-end;justify-content:flex-end;overflow:hidden;min-height:54px}
+.calc button{border:0;border-radius:8px;background:var(--panel2);color:var(--text);font:500 16px Poppins,sans-serif;cursor:pointer}
+.calc button:hover{background:#2b2e36}.calc .op{background:#2c3a1c;color:var(--accent)}.calc .eq{background:var(--accent);color:#10150a}
+.urlbar{display:flex;gap:6px;padding:8px;background:var(--panel2)}
+.urlbar input{flex:1;padding:7px 11px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;outline:none;user-select:text}
+.urlbar button,.btn{padding:7px 14px;border:0;border-radius:8px;background:var(--accent);color:#10150a;font:500 13px Poppins,sans-serif;cursor:pointer}
+iframe{width:100%;height:calc(100% - 50px);border:0;background:#fff}
+.fl{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px;padding:12px}
+.fl .ic{padding:10px 2px}
+.sw{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.sw div{width:84px;height:54px;border-radius:8px;border:2px solid var(--line);cursor:pointer}
+.sw div:hover{border-color:var(--accent)}
+
+#lock{position:fixed;inset:0;z-index:20000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer;overflow:hidden;background:#0c0a12;transition:opacity .5s,transform .6s cubic-bezier(.6,0,.3,1)}
+#lock::before{content:"";position:absolute;inset:-40px;filter:blur(14px) saturate(1.1);background-image:var(--wallimg),var(--garden);background-size:cover;background-position:center}
+#lock::after{content:"";position:absolute;inset:0;background:#0006}
+#lock>*{position:relative;z-index:1}
+#lock.gone{opacity:0;transform:translateY(-24px);pointer-events:none}
+#lt{font:46px 'Press Start 2P',monospace;color:#fff;letter-spacing:4px;text-shadow:0 3px 0 #0008,0 0 24px #0009}
+#ld{font:30px VT323,monospace;color:#f3eef4;letter-spacing:3px;margin-top:22px;text-shadow:0 2px 6px #000a}
+#lc{font:22px VT323,monospace;color:#fff;letter-spacing:2px;margin-top:38px;text-shadow:0 2px 6px #000a}
+#lh{position:absolute;bottom:calc(28px + env(safe-area-inset-bottom,0px));font:20px VT323,monospace;color:#ffffffa0;letter-spacing:2px;animation:bl 2.4s ease-in-out infinite}
+@keyframes bl{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){#lh{animation:none}#lock{transition:opacity .2s}}
+@media (max-width:560px){#lt{font-size:26px}#ld{font-size:24px}}
+#lockbtn{margin:0 10px 10px;height:40px;justify-content:center;background:var(--panel2)}
+:root{--wallimg:none;--garden:radial-gradient(ellipse 22% 30% at 12% 62%,#6aa646aa,transparent),radial-gradient(ellipse 20% 26% at 30% 70%,#e88fb0aa,transparent),radial-gradient(ellipse 26% 30% at 62% 78%,#4f8a3eaa,transparent),radial-gradient(ellipse 18% 24% at 82% 64%,#ee9ab8aa,transparent),radial-gradient(ellipse 30% 22% at 50% 14%,#8a3a5caa,transparent),radial-gradient(ellipse 34% 28% at 50% 42%,#b9a3b8aa,transparent),radial-gradient(ellipse 14% 90% at 4% 40%,#0b0b1a,transparent),radial-gradient(ellipse 14% 90% at 96% 40%,#0b0b1a,transparent)}
+#desk{overflow:hidden}
+#desk::before,#desk::after{content:"";position:absolute;inset:-40px;display:none;z-index:0;pointer-events:none}
+#desk::before{filter:blur(14px) saturate(1.1);background-image:var(--wallimg),var(--garden);background-size:cover;background-position:center}
+#desk::after{inset:0;background:#0006}
+#desk.garden::before,#desk.garden::after{display:block}
+#icons{z-index:1}
+.g{box-shadow:0 2px 6px #0007,inset 0 1px 0 #ffffff48}
+.g svg{width:56%;height:56%}
+.g.sm{width:20px;height:20px;border-radius:5px;box-shadow:none}
+.ti{width:18px;height:18px}
+img.g,.tbtn img.g{border-radius:23%;display:block;object-fit:contain;box-shadow:0 2px 6px #0006}
+.tbtn img.g,#tasks img.g{box-shadow:none}
+.set h4{margin:16px 0 8px;font-weight:600}.set h4:first-child{margin-top:0}
+.set .row{display:flex;gap:8px;margin-bottom:8px;align-items:center;justify-content:space-between}
+.set input{flex:1;min-width:0;padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;outline:none;user-select:text}
+.set input:focus{border-color:var(--accent)}
+.btn.alt{background:var(--panel2);color:var(--text)}
+[data-theme=light]{--bg:#eef0f4;--panel:#f7f8fa;--panel2:#e8ebf0;--line:#d5d9e0;--text:#1c1e24;--dim:#5d6270}
+[data-theme=light] .tbtn:hover,[data-theme=light] .tb button:hover{background:#00000012}
+[data-theme=light] .tbtn.act{background:#0000001a}
+[data-theme=light] textarea.np,[data-theme=light] #menu input,[data-theme=light] .urlbar input,[data-theme=light] .set input{background:#fff}
+[data-theme=light] .calc .scr{background:#e4e7ec}
+[data-theme=light] .calc button:hover{background:#d9dde4}
+[data-theme=light] .calc .op{background:#e0f0cd;color:#3b7d12}
+.gm{position:absolute;inset:0;display:flex;flex-direction:column}
+.gt{display:flex;gap:4px;padding:6px 8px 0;background:var(--panel2);overflow-x:auto;flex:none}
+.gt .sp{flex:1}
+.gtab{border:0;padding:8px 14px;border-radius:8px 8px 0 0;background:none;color:var(--dim);font:500 12.5px Poppins,sans-serif;cursor:pointer;white-space:nowrap;display:flex;gap:8px;align-items:center}
+.gtab:hover{background:#ffffff10;color:var(--text)}.gtab.on{background:var(--panel);color:var(--text)}
+.gc{opacity:.55}.gc:hover{opacity:1}
+.gx{gap:8px;padding:8px;background:var(--panel);border-bottom:1px solid var(--line);flex:none}
+.gv{flex:1;min-height:0;position:relative;background:var(--bg)}
+.gv iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+.ge{position:absolute;inset:0;display:grid;place-items:center;color:var(--dim);padding:20px;text-align:center}
+.gl{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:20px;text-align:center}
+.gl h3{font-size:18px}.gl p{color:var(--dim)}.gl .row{display:flex;gap:8px}.gl .er{color:#f87171;min-height:1.3em}
+.gl input,.gx input{flex:1;min-width:0;padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;outline:none;user-select:text}
+.gl input:focus,.gx input:focus{border-color:var(--accent)}
+[data-theme=light] .gtab:hover{background:#0000000d}
+[data-theme=light] .gl input,[data-theme=light] .gx input{background:#fff}
+.gg{position:absolute;inset:0;overflow:auto;padding:0 14px 14px;background:var(--bg)}
+.gs{position:sticky;top:0;padding:12px 0;background:var(--bg);z-index:2}
+.gs input{width:100%;max-width:380px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--text);font:inherit;outline:none;user-select:text}
+.gs input:focus{border-color:var(--accent)}
+.gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:12px}
+.gn{grid-column:1/-1;color:var(--dim);padding:24px 0;text-align:center}
+.tile{aspect-ratio:1;border:0;padding:0;border-radius:14px;overflow:hidden;background:var(--panel);color:var(--dim);cursor:pointer;position:relative;display:block;transition:transform .12s,box-shadow .12s}
+.tile:hover,.tile:focus-visible{transform:scale(1.05);box-shadow:0 8px 22px #0008;outline:none}
+.tile img{width:100%;height:100%;object-fit:cover;display:block}
+.tile>span:not(.rm){position:absolute;left:0;right:0;bottom:0;padding:22px 6px 7px;font:500 11px Poppins,sans-serif;color:#fff;background:linear-gradient(transparent,#000d);text-align:center;opacity:0;transition:opacity .12s;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tile:hover>span:not(.rm),.tile:focus-visible>span:not(.rm){opacity:1}
+.tile.ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line)}
+.tile.ph>span:not(.rm){position:static;padding:0 8px;background:none;opacity:1;color:var(--dim);max-width:100%}
+.tile.bad{opacity:.45;cursor:not-allowed}
+.rm{position:absolute;top:5px;right:5px;width:20px;height:20px;border-radius:50%;background:#000a;color:#fff;font-size:10px;display:none;place-items:center}
+.tile:hover .rm{display:grid}
+.win:fullscreen{border:0;border-radius:0;box-shadow:none}
+.win:fullscreen .tb,.win:fullscreen .rs{display:none}
+.win:-webkit-full-screen{border:0;border-radius:0;box-shadow:none}
+.win:-webkit-full-screen .tb,.win:-webkit-full-screen .rs{display:none}
+</style>
+</head>
+<body>
+<div id="lock" role="button" tabindex="0" aria-label="Unlock"><div id="lt">00:00 AM</div><div id="ld"></div><div id="lc">Made By DSM</div><div id="lh">Click or press any key</div></div>
+<div id="desk" class="garden"><div id="logo" style="display:none"><b>m</b></div><div id="icons"></div></div>
+<div id="menu"><input id="q" placeholder="Search apps" autocomplete="off"><div id="list"></div><button class="tbtn" id="lockbtn">Lock screen</button></div>
+<div id="bar">
+  <button class="tbtn" id="start" title="Menu"><img class="g" data-ic="start" alt=""></button>
+  <div id="tasks"></div>
+  <div id="tray"><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-label="Network"><path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.2" r=".7"/></svg><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Volume"><path d="M4 10v4h4l5 4V6L8 10z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg><div id="clk"></div><button id="sd" title="Show desktop" aria-label="Show desktop"></button></div>
+</div>
+<script>
+const $=(s,e=document)=>e.querySelector(s);
+const wallpapers={Garden:'garden',Graphite:'radial-gradient(ellipse at 55% 45%,#2a2b31 0%,#141518 55%,#08080a 100%)',Forest:'linear-gradient(135deg,#0f2418,#1f4a2c 55%,#0a1510)',Dusk:'linear-gradient(160deg,#1b1233,#4a2a5e 60%,#14101f)',Ocean:'linear-gradient(150deg,#071a2b,#0f4466 60%,#06121c)'};
+const apps=[
+ {id:'files',n:'Files',icon:'files',w:520,h:380,r:filesApp},
+ {id:'notes',n:'Notepad',icon:'notes',w:460,h:340,r:notesApp},
+ {id:'web',n:'Browser',icon:'web',w:720,h:480,r:webApp},
+ {id:'calc',n:'Calculator',icon:'calc',w:290,h:380,r:calcApp},
+ {id:'games',n:'Games',icon:'games',w:880,h:580,r:gamesApp},
+ {id:'set',n:'Settings',icon:'set',w:470,h:470,r:setApp}
+];
+const wins=[];let z=10,n=0,sel=null;
+function mk(t,tag='div',cls=''){const x=document.createElement(tag);x.className=cls;if(t!=null)x.innerHTML=t;return x}
+
+const IC={"files":["#ffb84d","#f0821e","<path d=\"M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/>"],"notes":["#5ab0ff","#2f6bdc","<path d=\"M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z\"/><path d=\"M14 3v5h5M9 13h6M9 17h4\"/>"],"web":["#38bdf8","#6366f1","<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18\"/>"],"calc":["#a78bfa","#6d3fd4","<rect x=\"5\" y=\"3\" width=\"14\" height=\"18\" rx=\"2\"/><path d=\"M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01\"/>"],"games":["#f472b6","#e11d48","<path d=\"M6 11h4M8 9v4M15 12h.01M18 10h.01\"/><path d=\"M17.3 5H6.7a4 4 0 0 0-4 3.6C2.6 9.4 2 14.5 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.4-1.4a2 2 0 0 1 1.4-.6h4.4a2 2 0 0 1 1.4.6L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.5-.6-6.600-.7-7.300A4 4 0 0 0 17.3 5z\"/>"],"set":["#34d399","#0e8f6a","<path d=\"M4 7h10M18 7h2M4 17h2M10 17h10\"/><circle cx=\"16\" cy=\"7\" r=\"2\"/><circle cx=\"8\" cy=\"17\" r=\"2\"/>"],"start":["#a3e635","#3f9b1c","<path d=\"M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4\"/>"]};
+const mix=(h,k)=>'#'+[1,3,5].map(i=>Math.round(parseInt(h.substr(i,2),16)*(1-k)+255*k).toString(16).padStart(2,'0')).join('');
+function builtin(n){const[a,b,p]=IC[n],d=theme==='dark';return 'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${d?a:mix(a,.82)}"/><stop offset="1" stop-color="${d?b:mix(b,.72)}"/></linearGradient></defs><rect x=".5" y=".5" width="63" height="63" rx="14.5" fill="url(#g)"/><g transform="translate(16 16) scale(1.333)" fill="none" stroke="${d?'#fff':b}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</g></svg>`)}
+document.addEventListener('error',e=>{const i=e.target;if(!i||i.tagName!=='IMG')return;
+ if(i.dataset.ic&&IC[i.dataset.ic]&&!i.dataset.fb){i.dataset.fb=1;i.src=builtin(i.dataset.ic)}
+ else if(i.dataset.l&&!i.dataset.tf){i.dataset.tf=1;i.src=tile(i.dataset.l)}},true);
+// ---- icons: where the SVG files live ----
+// Local folder by default. To use jsDelivr, push the icons folder to GitHub and use:
+// 'https://cdn.jsdelivr.net/gh/YOUR_USER/YOUR_REPO@main/icons/'
+const ICON_BASE='icons/';
+// icon files are ICON_BASE + 'dark/' or 'light/' + name + '.svg'
+let theme='dark';try{theme=localStorage.getItem('dsmhub-theme')||'dark'}catch(e){}
+let links=[];try{links=JSON.parse(localStorage.getItem('dsmhub-links')||'[]')}catch(e){}
+const saveLinks=()=>{try{localStorage.setItem('dsmhub-links',JSON.stringify(links))}catch(e){}};
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tile=l=>'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#4b5563"/><text x="32" y="43" font-size="30" text-anchor="middle" fill="#fff" font-family="sans-serif">${esc((l||'?').toUpperCase())}</text></svg>`);
+const iconSrc=name=>ICON_BASE+theme+'/'+name+'.svg';
+function glyph(a,sm){return `<img class="g${sm?' sm':''}" data-ic="${a.icon}" data-l="${esc(a.n[0])}" alt="" src="${iconSrc(a.icon)}">`}
+function linkGlyph(x){return `<img class="g" data-l="${esc(x.n[0])}" alt="" src="${x.i?esc(x.i):tile(x.n[0])}">`}
+function setIcons(){document.querySelectorAll('img[data-ic]').forEach(i=>{delete i.dataset.fb;delete i.dataset.tf;i.src=iconSrc(i.dataset.ic)})}
+function setTheme(t){theme=t;document.documentElement.dataset.theme=t;try{localStorage.setItem('dsmhub-theme',t)}catch(e){}setIcons()}
+document.documentElement.dataset.theme=theme;setIcons();
+// desktop icons + start menu
+const icons=$('#icons');
+function drawIcons(){icons.innerHTML='';
+ const add=(html,name,open)=>{const d=mk(html+`<span>${name}</span>`,'div','ic');
+  d.onclick=e=>{e.stopPropagation();document.querySelectorAll('.ic.sel').forEach(i=>i.classList.remove('sel'));d.classList.add('sel')};
+  d.ondblclick=open;icons.append(d)};
+ apps.forEach(a=>add(glyph(a),a.n,()=>openApp(a.id)));
+ links.forEach(x=>add(linkGlyph(x),esc(x.n),()=>window.open(x.u,'_blank','noopener')))}
+drawIcons();
+$('#desk').onclick=()=>{document.querySelectorAll('.ic.sel').forEach(i=>i.classList.remove('sel'));menu(false)};
+function drawList(f=''){const l=$('#list');l.innerHTML='';apps.filter(a=>a.n.toLowerCase().includes(f.toLowerCase())).forEach(a=>{const b=mk(glyph(a)+a.n,'button','tbtn');b.onclick=()=>{openApp(a.id);menu(false)};l.append(b)});if(!l.children.length)l.append(mk('<div class="pad" style="color:var(--dim)">No apps match that search.</div>'))}
+function menu(v){const m=$('#menu');m.classList.toggle('open',v);$('#start').classList.toggle('act',v);if(v){$('#q').value='';drawList();$('#q').focus()}}
+$('#start').onclick=e=>{e.stopPropagation();menu(!$('#menu').classList.contains('open'))};
+$('#q').oninput=e=>drawList(e.target.value);
+$('#q').onkeydown=e=>{if(e.key==='Enter'){const b=$('#list .tbtn');if(b)b.click()}if(e.key==='Escape')menu(false)};
+document.addEventListener('pointerdown',e=>{if(!e.target.closest('#menu,#start'))menu(false)});
+// windows
+function openApp(id,custom){const a=custom||apps.find(x=>x.id===id);
+ const w=mk(null,'div','win');w.style.cssText=`width:${a.w}px;height:${a.h}px;left:${90+(n%8)*28}px;top:${50+(n%8)*28}px;z-index:${++z}`;n++;
+ const tb=mk(`${glyph(a,1)}<span>${a.n}</span>${a.fs?'<button class="fs" title="Fullscreen" aria-label="Fullscreen"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>':''}<button class="m" title="Minimize">–</button><button class="mx" title="Maximize">▢</button><button class="x" title="Close">✕</button>`,'div','tb');
+ const body=mk(null,'div','body');w.append(tb,body,mk(null,'div','rs'));$('#desk').append(w);
+ const btn=mk(glyph(a)+`<em>${a.n}</em>`,'button','tbtn on');$('#tasks').append(btn);
+ const o={w,btn,a};wins.push(o);a.r(body);focus(o);
+ const clamp=()=>{const r=$('#desk').getBoundingClientRect();w.style.left=Math.min(Math.max(parseFloat(w.style.left),-w.offsetWidth+80),r.width-60)+'px';w.style.top=Math.min(Math.max(parseFloat(w.style.top),0),r.height-36)+'px'};
+ tb.onpointerdown=e=>{if(e.target.closest('button')||w.classList.contains('max'))return;focus(o);const sx=e.clientX-w.offsetLeft,sy=e.clientY-w.offsetTop;tb.setPointerCapture(e.pointerId);tb.style.cursor='grabbing';
+  tb.onpointermove=ev=>{w.style.left=(ev.clientX-sx)+'px';w.style.top=(ev.clientY-sy)+'px'};
+  tb.onpointerup=()=>{tb.onpointermove=tb.onpointerup=null;tb.style.cursor='';clamp()}};
+ const rs=$('.rs',w);rs.onpointerdown=e=>{e.stopPropagation();focus(o);const sw=w.offsetWidth,sh=w.offsetHeight,sx=e.clientX,sy=e.clientY;rs.setPointerCapture(e.pointerId);
+  rs.onpointermove=ev=>{w.style.width=Math.max(260,sw+ev.clientX-sx)+'px';w.style.height=Math.max(160,sh+ev.clientY-sy)+'px'};rs.onpointerup=()=>rs.onpointermove=rs.onpointerup=null};
+ w.onpointerdown=()=>focus(o);
+ $('.m',w).onclick=()=>minim(o,true);
+ const fb=$('.fs',w);if(fb)fb.onclick=()=>{const cf=document.fullscreenElement||document.webkitFullscreenElement,rq=w.requestFullscreen||w.webkitRequestFullscreen;if(cf===w)(document.exitFullscreen||document.webkitExitFullscreen).call(document);else if(rq)rq.call(w);else w.classList.toggle('max')};$('.mx',w).onclick=()=>w.classList.toggle('max');tb.ondblclick=e=>{if(!e.target.closest('button'))w.classList.toggle('max')};
+ $('.x',w).onclick=()=>{w.remove();btn.remove();wins.splice(wins.indexOf(o),1)};
+ btn.onclick=()=>{if(w.classList.contains('min')||sel!==o)focus(o);else minim(o,true)}}
+function focus(o){o.w.classList.remove('min');o.w.style.zIndex=++z;sel=o;wins.forEach(x=>x.btn.classList.toggle('act',x===o))}
+function minim(o,v){o.w.classList.toggle('min',v);o.btn.classList.remove('act');if(sel===o)sel=null}
+$('#sd').onclick=()=>{const all=wins.every(o=>o.w.classList.contains('min'));wins.forEach(o=>all?o.w.classList.remove('min'):minim(o,true));if(all&&wins.length)focus(wins[wins.length-1])};
+// clock
+function tick(){const d=new Date();$('#clk').innerHTML=d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+`<small>${d.toLocaleDateString()}</small>`}tick();setInterval(tick,15000);
+// apps
+function filesApp(b){const f=['Documents','Downloads','Pictures','Music','Videos','Projects'];const g=mk(null,'div','fl');
+ f.forEach(x=>{const d=mk(`${glyph(apps[0])}<span>${x}</span>`,'div','ic');d.ondblclick=()=>alert(x+' is empty.');g.append(d)});b.append(g)}
+function notesApp(b){const t=mk(null,'textarea','np');t.placeholder='Start typing. Your note is saved in this browser.';try{t.value=localStorage.getItem('webos-note')||''}catch(e){}
+ t.oninput=()=>{try{localStorage.setItem('webos-note',t.value)}catch(e){}};b.append(t)}
+function webApp(b){b.innerHTML='<div class="urlbar"><input value="https://en.wikipedia.org" aria-label="Address"><button>Go</button></div><div class="pad" id="msg" style="color:var(--dim)">Enter an address and press Go. Some sites refuse to load inside other pages, so they will show blank.</div>';
+ const i=$('input',b),go=()=>{let u=i.value.trim();if(!u)return;if(!/^https?:\/\//.test(u))u='https://'+u;i.value=u;const m=$('#msg',b);if(m)m.remove();let fr=$('iframe',b);if(!fr){fr=document.createElement('iframe');b.append(fr)}fr.src=u};
+ $('button',b).onclick=go;i.onkeydown=e=>{if(e.key==='Enter')go()}}
+function calcApp(b){const s=mk('0','div','scr'),g=mk(null,'div','calc');g.append(s);let ex='';
+ '7 8 9 / 4 5 6 * 1 2 3 - 0 . C +'.split(' ').concat('=').forEach(k=>{const x=mk(k==='*'?'×':k==='/'?'÷':k,'button',k==='='?'eq':'+-*/'.includes(k)?'op':'');
+  x.onclick=()=>{if(k==='C')ex='';else if(k==='='){try{ex=String(Function('"use strict";return ('+(ex||'0')+')')())}catch(e){ex=''}}else ex+=k;s.textContent=ex||'0'};g.append(x)});b.append(g)}
+function setApp(b){
+ b.innerHTML=`<div class="pad set"><h4>Theme</h4><div class="row"><button class="btn" data-t="dark">Dark</button><button class="btn" data-t="light">Light</button></div>
+ <h4>Wallpaper</h4><div class="sw"></div>
+ <h4>Add a shortcut</h4><div class="row"><input id="sn" placeholder="Name"><input id="su" placeholder="Link (https://...)"></div>
+ <div class="row"><input id="si" placeholder="Icon URL, SVG or PNG (optional)"><button class="btn" id="sa">Add</button></div><div id="sl"></div></div>`;
+ const paint=()=>b.querySelectorAll('[data-t]').forEach(x=>x.classList.toggle('alt',x.dataset.t!==theme));
+ b.querySelectorAll('[data-t]').forEach(x=>x.onclick=()=>{setTheme(x.dataset.t);paint()});paint();
+ const sw=$('.sw',b);
+ Object.entries(wallpapers).forEach(([k,v])=>{const d=mk(null,'div');d.style.background=v==='garden'?'linear-gradient(135deg,#6aa646,#e88fb0 50%,#4f8a3e)':v;d.title=k;d.onclick=()=>{const dk=$('#desk');dk.classList.toggle('garden',v==='garden');dk.style.background=v==='garden'?'':v;$('#logo').style.display=k==='Graphite'?'':'none'};sw.append(d)});
+ const list=()=>{const l=$('#sl',b);l.innerHTML='';links.forEach((x,i)=>{const r=mk(`<span>${esc(x.n)}</span>`,'div','row');const d=mk('Remove','button','btn alt');d.onclick=()=>{links.splice(i,1);saveLinks();drawIcons();list()};r.append(d);l.append(r)})};
+ $('#sa',b).onclick=()=>{const n=$('#sn',b).value.trim();let u=$('#su',b).value.trim();const ic=$('#si',b).value.trim();if(!n||!u)return;if(!/^https?:\/\//.test(u))u='https://'+u;links.push({n,u,i:ic});saveLinks();drawIcons();list();['#sn','#su','#si'].forEach(q=>$(q,b).value='')};
+ list()}
+// ---- games (encrypted) ----
+// Files in games/ are AES-GCM encrypted with your code, so nobody can read the game source on GitHub without it.
+// Make them with encrypt.html, then upload the .enc files and index.json to the games/ folder.
+const KDF=1000;
+// Games open with no code. This key is baked in (encrypt.html has the same one). If you change it, re-encrypt your games.
+const GAMES_KEY='3d55bf4b0663c90ef947553c929df7be';
+const gcode=GAMES_KEY;
+const gp=n=>n.includes('/')?n:'games/'+n,isEnc=f=>/\.enc$/i.test(f);
+async function gdec(code,buf){const u=new Uint8Array(buf),k0=await crypto.subtle.importKey('raw',new TextEncoder().encode(code),'PBKDF2',false,['deriveKey']),key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:u.slice(0,16),iterations:KDF,hash:'SHA-256'},k0,{name:'AES-GCM',length:256},false,['decrypt']);return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:u.slice(16,28)},key,u.slice(28))))}
+async function glist(){const r=await fetch('games/index.json',{cache:'no-cache'});return r.ok?await r.json():[]}
+function gamesApp(b){
+ b.innerHTML='<div class="gm"><div class="gg"><div class="gs"><input type="search" placeholder="Search games" aria-label="Search games"></div><div class="gr">Loading…</div></div></div>';
+ const gr=$('.gr',b),q=$('.gs input',b);let tabs=[];
+ const GP='<svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+IC.games[2]+'</svg>';
+ async function loadAll(){const src=(await glist().catch(()=>[])).map(f=>({f:gp(f)}));
+  tabs=await Promise.all(src.map(async s=>{const nm=s.f.split('/').pop();try{if(isEnc(s.f)){const r=await fetch(s.f);if(!r.ok)throw 0;const o=await gdec(gcode,await r.arrayBuffer());return {...s,n:o.n||nm,h:o.h,t:o.t}}return {...s,n:nm}}catch(e){return {...s,n:nm,bad:1}}}));
+  tabs.sort((x,y)=>x.n.localeCompare(y.n))}
+ function playGame(t){openApp('games',{id:'games',fs:true,n:t.n,icon:'games',w:860,h:600,r:body=>{const fr=document.createElement('iframe');fr.title=t.n;fr.allow='fullscreen; autoplay; gamepad; pointer-lock';fr.setAttribute('allowfullscreen','');fr.style.cssText='position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff';if(t.h!=null)fr.srcdoc=t.h;else fr.src=t.f;body.append(fr)}})}
+ function renderGrid(){gr.innerHTML='';const k=q.value.trim().toLowerCase(),list=tabs.filter(t=>t.n.toLowerCase().includes(k));
+  if(!list.length){gr.append(mk(tabs.length?'No games match your search.':'No games yet. Encrypt them with encrypt.html, upload them to the games folder, and list them in games/index.json.','p','gn'));return}
+  list.forEach(t=>{const ok=t.t&&!t.bad,el=mk(null,'button','tile'+(ok?'':' ph')+(t.bad?' bad':''));el.title=t.bad?'Could not load this game. Check the path and the code.':t.n;
+   if(ok){const im=document.createElement('img');im.alt='';im.src=t.t;el.append(im)}else el.insertAdjacentHTML('beforeend',GP);
+   el.append(mk(esc(t.n),'span'));el.onclick=()=>{if(!t.bad)playGame(t)};gr.append(el)})}
+ q.oninput=renderGrid;loadAll().then(renderGrid)}
+// lock screen
+const lock=$('#lock');
+function lockTick(){const d=new Date();$('#lt').textContent=d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});$('#ld').textContent=d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}
+lockTick();setInterval(lockTick,1000);
+function unlock(){lock.classList.add('gone')}
+function relock(){menu(false);wins.filter(o=>o.a.id==='games').forEach(o=>$('.x',o.w).click());lock.classList.remove('gone')}
+lock.onclick=unlock;
+document.addEventListener('keydown',e=>{if(!lock.classList.contains('gone')){e.preventDefault();unlock()}});
+$('#lockbtn').onclick=relock;
+openApp('notes');
+</script>
+</body>
+</html>
