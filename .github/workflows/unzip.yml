@@ -1,0 +1,50 @@
+# Put this file in your repo at .github/workflows/unzip.yml
+# Then upload a .zip to the top of the repo (not inside a folder).
+# It gets unzipped into the repo and the zip is deleted.
+name: Unzip uploads
+
+on:
+  push:
+    paths:
+      - '*.zip'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unzip and add the contents to the repo
+        run: |
+          shopt -s nullglob
+          for z in *.zip; do
+            echo "Unzipping $z"
+            tmp=$(mktemp -d)
+            # encrypt.html is skipped on purpose; delete its pattern below if you want it in the repo
+            unzip -q -o "$z" -d "$tmp" \
+              -x '.github/*' '*/.github/*' '.git/*' '*/.git/*' '__MACOSX/*' '*.DS_Store' '*encrypt.html'
+            # if everything is inside one folder, use what is inside that folder
+            if [ "$(ls -A "$tmp" | wc -l)" -eq 1 ] && [ -d "$tmp/$(ls -A "$tmp")" ]; then
+              src="$tmp/$(ls -A "$tmp")"
+            else
+              src="$tmp"
+            fi
+            cp -a "$src"/. .
+            rm -rf "$tmp" "$z"
+          done
+
+      - name: Commit the result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+          else
+            git commit -m "Unzip upload [skip ci]"
+            git push
+          fi
