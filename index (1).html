@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DSMHub</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0d0f;--panel:#17181c;--panel2:#202228;--line:#2c2e35;--text:#f1f2f4;--dim:#9a9ca6;--accent:#87cf3e;--wall:radial-gradient(ellipse at 55% 45%,#2a2b31 0%,#141518 55%,#08080a 100%);box-sizing:border-box}
+*{box-sizing:border-box;margin:0}*{scrollbar-width:none!important;-ms-overflow-style:none!important}*::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font:13px/1.35 Poppins,system-ui,sans-serif;user-select:none}
+#desk{position:fixed;inset:0 0 48px 0;background:var(--wall);background-size:cover}
+#logo{position:absolute;left:50%;top:46%;width:240px;height:240px;transform:translate(-50%,-50%) rotate(-18deg);border-radius:50%;border:16px solid #d8d9dd;box-shadow:0 20px 60px #000a,inset 0 0 20px #0008;opacity:.9;display:grid;place-items:center;pointer-events:none}
+#logo b{font-size:96px;color:#d8d9dd;letter-spacing:-6px}
+#icons{position:absolute;left:8px;top:8px;bottom:8px;display:grid;grid-template-columns:repeat(2,84px);grid-auto-rows:92px;grid-auto-flow:row;align-content:start;gap:0}
+.ic{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px;border-radius:6px;cursor:default;text-align:center;font-size:11.5px;text-shadow:0 1px 3px #000}
+.ic:hover{background:#ffffff14}.ic.sel{background:#87cf3e30;outline:1px solid #87cf3e66}
+.g{width:44px;height:44px;border-radius:11px;display:grid;place-items:center;font-size:24px;box-shadow:0 2px 6px #0007}
+.win{position:absolute;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 14px 44px #000b;display:flex;flex-direction:column;overflow:hidden;min-width:260px;min-height:160px}
+.win.max{inset:0 0 0 0!important;width:auto!important;height:auto!important;border-radius:0}
+.win.min{display:none}
+.tb{display:flex;align-items:center;gap:8px;padding:0 6px 0 12px;height:36px;background:var(--panel2);cursor:grab;flex:none}
+.tb span{flex:1;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tb button{width:28px;height:24px;border:0;border-radius:5px;background:none;color:var(--dim);font-size:14px;cursor:pointer}
+.tb button:hover{background:#ffffff1c;color:var(--text)}.tb .x:hover{background:#e5484d;color:#fff}
+.body{flex:1;overflow:auto;position:relative;min-height:0}
+.rs{position:absolute;right:0;bottom:0;width:16px;height:16px;cursor:nwse-resize}
+#bar{position:fixed;left:0;right:0;bottom:0;height:48px;padding-bottom:env(safe-area-inset-bottom,0px);background:var(--panel);border-top:1px solid var(--line);display:flex;align-items:center;gap:2px;padding-left:6px;padding-right:6px;z-index:9999}
+.tbtn{height:40px;min-width:40px;padding:0 8px;border:0;border-radius:7px;background:none;color:var(--text);display:flex;align-items:center;gap:7px;cursor:pointer;font:inherit;position:relative}
+.tbtn:hover{background:#ffffff14}
+.tbtn.on::after{content:"";position:absolute;left:8px;right:8px;bottom:2px;height:3px;border-radius:2px;background:var(--accent)}
+.tbtn.act{background:#ffffff1a}
+.tbtn .g{width:28px;height:28px;font-size:17px;border-radius:7px;box-shadow:none}
+#tasks{display:flex;gap:2px;flex:1;overflow:hidden}
+#tasks .tbtn{max-width:170px}#tasks .tbtn em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+#tray{display:flex;align-items:center;gap:12px;color:var(--dim);padding-right:2px}
+#clk{text-align:right;line-height:1.15;color:var(--text);font-size:12.5px}#clk small{display:block;color:var(--dim);font-size:10.5px}
+#sd{width:16px;height:22px;border:1.5px solid var(--dim);border-radius:3px;background:none;cursor:pointer}
+#sd:hover{border-color:var(--text)}
+#menu{position:fixed;left:6px;bottom:54px;width:340px;max-height:70vh;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 14px 44px #000b;display:none;flex-direction:column;z-index:9998;overflow:hidden}
+#menu.open{display:flex}
+#menu input{margin:10px;padding:9px 12px;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--text);font:inherit;outline:none;user-select:text}
+#menu input:focus{border-color:var(--accent)}
+#list{overflow:auto;padding:0 6px 8px}
+#list .tbtn{width:100%;height:44px}
+.pad{padding:14px}
+textarea.np{width:100%;height:100%;border:0;resize:none;background:#111215;color:var(--text);font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;padding:12px;outline:none;user-select:text}
+.calc{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:10px;height:100%;grid-auto-rows:1fr}
+.calc .scr{grid-column:1/-1;background:#0e0f12;border-radius:8px;padding:8px 12px;text-align:right;font-size:26px;display:flex;align-items:flex-end;justify-content:flex-end;overflow:hidden;min-height:54px}
+.calc button{border:0;border-radius:8px;background:var(--panel2);color:var(--text);font:500 16px Poppins,sans-serif;cursor:pointer}
+.calc button:hover{background:#2b2e36}.calc .op{background:#2c3a1c;color:var(--accent)}.calc .eq{background:var(--accent);color:#10150a}
+.urlbar{display:flex;gap:6px;padding:8px;background:var(--panel2)}
+.urlbar input{flex:1;padding:7px 11px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;outline:none;user-select:text}
+.urlbar button,.btn{padding:7px 14px;border:0;border-radius:8px;background:var(--accent);color:#10150a;font:500 13px Poppins,sans-serif;cursor:pointer}
+iframe{width:100%;height:calc(100% - 50px);border:0;background:#fff}
+.fl{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px;padding:12px}
+.fl .ic{padding:10px 2px}
+.sw{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.sw div{width:84px;height:54px;border-radius:8px;border:2px solid var(--line);cursor:pointer}
+.sw div:hover{border-color:var(--accent)}
+
+#lock{position:fixed;inset:0;z-index:20000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer;overflow:hidden;background:#0c0a12;transition:opacity .5s,transform .6s cubic-bezier(.6,0,.3,1)}
+#lock::before{content:"";position:absolute;inset:-40px;filter:blur(14px) saturate(1.1);background-image:var(--wallimg),var(--garden);background-size:cover;background-position:center}
+#lock::after{content:"";position:absolute;inset:0;background:#0006}
+#lock>*{position:relative;z-index:1}
+#lock.gone{opacity:0;transform:translateY(-24px);pointer-events:none}
+#lt{font:46px 'Press Start 2P',monospace;color:#fff;letter-spacing:4px;text-shadow:0 3px 0 #0008,0 0 24px #0009}
+#ld{font:30px VT323,monospace;color:#f3eef4;letter-spacing:3px;margin-top:22px;text-shadow:0 2px 6px #000a}
+#lc{font:22px VT323,monospace;color:#fff;letter-spacing:2px;margin-top:38px;text-shadow:0 2px 6px #000a}
+#lh{position:absolute;bottom:calc(28px + env(safe-area-inset-bottom,0px));font:20px VT323,monospace;color:#ffffffa0;letter-spacing:2px;animation:bl 2.4s ease-in-out infinite}
+@keyframes bl{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){#lh{animation:none}#lock{transition:opacity .2s}}
+@media (max-width:560px){#lt{font-size:26px}#ld{font-size:24px}}
+#lockbtn{margin:0 10px 10px;height:40px;justify-content:center;background:var(--panel2)}
+:root{--wallimg:none;--garden:radial-gradient(ellipse 22% 30% at 12% 62%,#6aa646aa,transparent),radial-gradient(ellipse 20% 26% at 30% 70%,#e88fb0aa,transparent),radial-gradient(ellipse 26% 30% at 62% 78%,#4f8a3eaa,transparent),radial-gradient(ellipse 18% 24% at 82% 64%,#ee9ab8aa,transparent),radial-gradient(ellipse 30% 22% at 50% 14%,#8a3a5caa,transparent),radial-gradient(ellipse 34% 28% at 50% 42%,#b9a3b8aa,transparent),radial-gradient(ellipse 14% 90% at 4% 40%,#0b0b1a,transparent),radial-gradient(ellipse 14% 90% at 96% 40%,#0b0b1a,transparent)}
+#desk{overflow:hidden}
+#desk::before,#desk::after{content:"";position:absolute;inset:-40px;display:none;z-index:0;pointer-events:none}
+#desk::before{filter:blur(14px) saturate(1.1);background-image:var(--wallimg),var(--garden);background-size:cover;background-position:center}
+#desk::after{inset:0;background:#0006}
+#desk.garden::before,#desk.garden::after{display:block}
+#icons{z-index:1}
+.g{box-shadow:0 2px 6px #0007,inset 0 1px 0 #ffffff48}
+.g svg{width:56%;height:56%}
+.g.sm{width:20px;height:20px;border-radius:5px;box-shadow:none}
+.ti{width:18px;height:18px}
+img.g,.tbtn img.g{border-radius:23%;display:block;object-fit:contain;box-shadow:0 2px 6px #0006}
+.tbtn img.g,#tasks img.g{box-shadow:none}
+.set h4{margin:16px 0 8px;font-weight:600}.set h4:first-child{margin-top:0}
+.set .row{display:flex;gap:8px;margin-bottom:8px;align-items:center;justify-content:space-between}
+.set input{flex:1;min-width:0;padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;outline:none;user-select:text}
+.set input:focus{border-color:var(--accent)}
+.btn.alt{background:var(--panel2);color:var(--text)}
+[data-theme=light]{--bg:#eef0f4;--panel:#f7f8fa;--panel2:#e8ebf0;--line:#d5d9e0;--text:#1c1e24;--dim:#5d6270}
+[data-theme=light] .tbtn:hover,[data-theme=light] .tb button:hover{background:#00000012}
+[data-theme=light] .tbtn.act{background:#0000001a}
+[data-theme=light] textarea.np,[data-theme=light] #menu input,[data-theme=light] .urlbar input,[data-theme=light] .set input{background:#fff}
+[data-theme=light] .calc .scr{background:#e4e7ec}
+[data-theme=light] .calc button:hover{background:#d9dde4}
+[data-theme=light] .calc .op{background:#e0f0cd;color:#3b7d12}
+.gm{position:absolute;inset:0;display:flex;flex-direction:column}
+.gt{display:flex;gap:4px;padding:6px 8px 0;background:var(--panel2);overflow-x:auto;flex:none}
+.gt .sp{flex:1}
+.gtab{border:0;padding:8px 14px;border-radius:8px 8px 0 0;background:none;color:var(--dim);font:500 12.5px Poppins,sans-serif;cursor:pointer;white-space:nowrap;display:flex;gap:8px;align-items:center}
+.gtab:hover{background:#ffffff10;color:var(--text)}.gtab.on{background:var(--panel);color:var(--text)}
+.gc{opacity:.55}.gc:hover{opacity:1}
+.gx{gap:8px;padding:8px;background:var(--panel);border-bottom:1px solid var(--line);flex:none}
+.gv{flex:1;min-height:0;position:relative;background:var(--bg)}
+.gv iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+.ge{position:absolute;inset:0;display:grid;place-items:center;color:var(--dim);padding:20px;text-align:center}
+.gl{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:20px;text-align:center}
+.gl h3{font-size:18px}.gl p{color:var(--dim)}.gl .row{display:flex;gap:8px}.gl .er{color:#f87171;min-height:1.3em}
+.gl input,.gx input{flex:1;min-width:0;padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;outline:none;user-select:text}
+.gl input:focus,.gx input:focus{border-color:var(--accent)}
+[data-theme=light] .gtab:hover{background:#0000000d}
+[data-theme=light] .gl input,[data-theme=light] .gx input{background:#fff}
+.gg{position:absolute;inset:0;overflow:auto;padding:0 14px 14px;background:var(--bg)}
+.gs{position:sticky;top:0;padding:12px 0;background:var(--bg);z-index:2}
+.gs input{width:100%;max-width:380px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--text);font:inherit;outline:none;user-select:text}
+.gs input:focus{border-color:var(--accent)}
+.gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:12px}
+.gn{grid-column:1/-1;color:var(--dim);padding:24px 0;text-align:center}
+.tile{aspect-ratio:1;border:0;padding:0;border-radius:14px;overflow:hidden;background:var(--panel);color:var(--dim);cursor:pointer;position:relative;display:block;transition:transform .12s,box-shadow .12s}
+.tile:hover,.tile:focus-visible{transform:scale(1.05);box-shadow:0 8px 22px #0008;outline:none}
+.tile img{width:100%;height:100%;object-fit:cover;display:block}
+.tile>span:not(.rm){position:absolute;left:0;right:0;bottom:0;padding:22px 6px 7px;font:500 11px Poppins,sans-serif;color:#fff;background:linear-gradient(transparent,#000d);text-align:center;opacity:0;transition:opacity .12s;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tile:hover>span:not(.rm),.tile:focus-visible>span:not(.rm){opacity:1}
+.tile.ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line)}
+.tile.ph>span:not(.rm){position:static;padding:0 8px;background:none;opacity:1;color:var(--dim);max-width:100%}
+.tile.bad{opacity:.45;cursor:not-allowed}
+.rm{position:absolute;top:5px;right:5px;width:20px;height:20px;border-radius:50%;background:#000a;color:#fff;font-size:10px;display:none;place-items:center}
+.tile:hover .rm{display:grid}
+.win:fullscreen{border:0;border-radius:0;box-shadow:none}
+.win:fullscreen .tb,.win:fullscreen .rs{display:none}
+.win:-webkit-full-screen{border:0;border-radius:0;box-shadow:none}
+.win:-webkit-full-screen .tb,.win:-webkit-full-screen .rs{display:none}
+
+/* DSMHub Discord-style community chat */
+.dch{height:100%;min-height:0;display:grid;grid-template-columns:220px minmax(0,1fr) 190px;background:#313338;color:#f2f3f5;font:13px/1.45 Poppins,system-ui,sans-serif;overflow:hidden}
+.dch button,.dch input,.dch textarea{font:inherit}
+.dch-channels{background:#2b2d31;display:flex;flex-direction:column;min-width:0}
+.dch-head{height:49px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid #202124;font-weight:600;color:#fff}
+.dch-channel-title{display:flex;align-items:center;justify-content:space-between;padding:16px 10px 5px;color:#949ba4;font-size:10px;font-weight:700;letter-spacing:.08em}
+.dch-channel-list{padding:0 7px 8px;overflow:auto;min-height:0}
+.dch-category{margin-top:9px}
+.dch-category:first-child{margin-top:0}
+.dch-category-head{height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 3px;color:#949ba4;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.dch-category-add,.dch-add-category{width:23px;height:23px;border:0;border-radius:5px;background:transparent;color:#b5bac1;font-size:16px;cursor:pointer}
+.dch-category-add:hover,.dch-add-category:hover{background:#404249;color:#fff}
+.dch-admin-note{padding:10px 9px;color:#f0c674;font-size:10px;line-height:1.45}
+.dch-channel{width:100%;height:34px;padding:0 9px;border:0;border-radius:5px;background:none;color:#b5bac1;text-align:left;display:flex;align-items:center;gap:8px;cursor:pointer}
+.dch-channel:hover{background:#35373c;color:#dbdee1}
+.dch-channel.active{background:#404249;color:#fff}
+.dch-hash{font-size:18px;color:#949ba4}
+.dch-server-info{margin-top:auto;padding:11px 12px;background:#232428;color:#b5bac1;font-size:11px}
+.dch-server-info strong{display:block;color:#fff;font-size:12px}
+.dch-main{min-width:0;min-height:0;display:flex;flex-direction:column;background:#313338}
+.dch-top{height:49px;flex:none;display:flex;align-items:center;gap:9px;padding:0 16px;border-bottom:1px solid #25262a;box-shadow:0 1px 2px #0003}
+.dch-top .dch-hash{font-size:23px}
+.dch-top strong{font-size:14px;color:#fff}
+.dch-topic{color:#b5bac1;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dch-top-spacer{flex:1}
+.dch-connection{font-size:11px;color:#949ba4}
+.dch-user{max-width:142px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#dbdee1;font-size:11px}
+.dch-small-btn{height:29px;padding:0 9px;border:0;border-radius:5px;background:#404249;color:#e3e5e8;cursor:pointer;font-size:11px}
+.dch-small-btn:hover{background:#4d5058}
+.dch-messages{flex:1;min-height:0;overflow:auto;padding:18px 18px 12px;user-select:text}
+.dch-welcome{padding:8px 0 20px;border-bottom:1px solid #41434a;margin-bottom:16px}
+.dch-welcome .dch-hash{display:grid;place-items:center;width:55px;height:55px;border-radius:50%;background:#41434a;color:#fff;font-size:30px;margin-bottom:12px}
+.dch-welcome h2{font-size:22px;color:#fff;margin-bottom:4px}
+.dch-welcome p{color:#b5bac1;font-size:12px}
+.dch-message{display:flex;gap:10px;padding:7px 4px;border-radius:4px}
+.dch-message:hover{background:#2e3035}
+.dch-avatar{width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;background:#5865f2;color:white;font-size:12px;font-weight:700}
+.dch-msg-content{min-width:0;flex:1}
+.dch-msg-head{display:flex;align-items:baseline;gap:7px;margin-bottom:2px}
+.dch-msg-head strong{font-size:12px;color:#f2f3f5}
+.dch-msg-head time{font-size:10px;color:#949ba4}
+.dch-msg-body{color:#dbdee1;font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere}
+.dch-message-tools{margin-left:auto;display:flex;gap:4px;opacity:0;transition:opacity .12s}
+.dch-message:hover .dch-message-tools,.dch-message:focus-within .dch-message-tools{opacity:1}
+.dch-message-delete,.dch-manage-member{border:0;border-radius:4px;background:#404249;color:#dbdee1;padding:3px 7px;font-size:10px;cursor:pointer}
+.dch-message-delete:hover,.dch-manage-member:hover{background:#b33b42;color:#fff}
+.dch-attachments{display:flex;flex-direction:column;gap:7px;margin-top:8px}
+.dch-attachment{width:min(100%,360px);padding:8px;border:1px solid #41434a;border-radius:7px;background:#292b30;color:#dbdee1;text-decoration:none;display:flex;align-items:center;gap:8px;font-size:11px}
+.dch-attachment:hover{border-color:#5865f2}
+.dch-attachment-preview{display:block;max-width:min(100%,360px);max-height:240px;object-fit:contain;margin-top:7px;border-radius:7px;cursor:zoom-in}
+.dch-member{min-width:0}
+.dch-role-badge{flex:none;border-radius:4px;padding:2px 5px;background:#414b87;color:#dfe2ff;font-size:9px;font-weight:700}
+.dch-role-badge.owner{background:#725533;color:#ffe2a6}
+.dch-member-tools{margin-left:auto}
+.dch-file-picker{width:30px;height:32px;flex:none;border:0;border-radius:6px;background:transparent;color:#b5bac1;font-size:20px;cursor:pointer}
+.dch-file-picker:hover{background:#45474f;color:#fff}
+.dch-file-queue{display:flex;flex-wrap:wrap;gap:5px;padding:0 3px 5px}
+.dch-file-chip{display:flex;align-items:center;gap:6px;max-width:100%;padding:4px 7px;border:1px solid #45474f;border-radius:6px;background:#292b30;color:#c9cbd0;font-size:10px}
+.dch-file-chip span{max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dch-file-chip button{border:0;background:transparent;color:#b5bac1;cursor:pointer}
+.dch-file-error{color:#ff8b8b;font-size:10px;padding:2px 3px}
+.dch-empty{color:#949ba4;text-align:center;padding:24px;font-size:12px}
+.dch-composer-wrap{padding:8px 16px 15px;flex:none}
+.dch-compose{display:flex;align-items:flex-end;gap:9px;padding:9px 10px;background:#383a40;border-radius:8px}
+.dch-compose textarea{flex:1;min-width:0;max-height:130px;resize:vertical;border:0;outline:0;background:transparent;color:#f2f3f5;user-select:text}
+.dch-compose textarea::placeholder{color:#949ba4}
+.dch-send{width:32px;height:32px;border:0;border-radius:6px;background:#5865f2;color:#fff;font-size:18px;cursor:pointer}
+.dch-send:hover{background:#4752c4}
+.dch-compose-help{padding:5px 3px 0;color:#949ba4;font-size:10px}
+.dch-members{background:#2b2d31;padding:16px 11px;overflow:auto}
+.dch-members h3{font-size:10px;letter-spacing:.08em;color:#949ba4;margin:1px 5px 10px}
+.dch-member{display:flex;align-items:center;gap:8px;padding:6px 5px;color:#dbdee1;font-size:11px;overflow:hidden}
+.dch-member .dch-avatar{width:27px;height:27px;font-size:10px}
+.dch-member-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dch-gate{height:100%;min-height:0;display:grid;place-items:center;padding:18px;background:radial-gradient(ellipse at top,#3b3d4b,#1e1f22 70%);color:#f2f3f5;overflow:auto}
+.dch-card{width:min(100%,460px);padding:25px;background:#2b2d31;border:1px solid #41434a;border-radius:13px;box-shadow:0 16px 48px #0006}
+.dch-card h2{font-size:20px;margin-bottom:5px;color:#fff}
+.dch-card>p{color:#b5bac1;font-size:12px;margin-bottom:17px}
+.dch-brand{display:flex;align-items:center;gap:9px;margin-bottom:16px;color:#fff;font-weight:700}
+.dch-brand-mark{width:34px;height:34px;border-radius:11px;background:#5865f2;display:grid;place-items:center}
+.dch-field{display:block;color:#c9cbd0;font-size:11px;margin:11px 0 5px}
+.dch-input{width:100%;height:38px;padding:0 10px;border:1px solid #45474f;border-radius:6px;background:#1e1f22;color:#fff;outline:none;user-select:text}
+.dch-input:focus{border-color:#5865f2}
+.dch-primary{height:38px;padding:0 13px;border:0;border-radius:6px;background:#5865f2;color:#fff;font-weight:600;cursor:pointer}
+.dch-primary:hover{background:#4752c4}
+.dch-setup-submit{width:100%;margin-top:15px}
+.dch-note{margin-top:12px;color:#949ba4;font-size:10px;line-height:1.5}
+.dch-error{min-height:16px;margin-top:8px;color:#ff8b8b;font-size:11px}
+.dch-auth{display:grid;place-items:center;min-height:250px}
+.dch-auth-note{color:#b5bac1;font-size:11px;text-align:center;margin:12px 0}
+#menu .updater{margin:0 10px 10px;padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--panel2)}
+#menu .updater-title{font-size:11px;font-weight:600;color:var(--text);margin-bottom:2px}
+#menu .updater-status{min-height:15px;color:var(--dim);font-size:10px;margin:3px 0 7px}
+#menu .updater-actions{display:flex;align-items:center;gap:8px}
+#menu .updater button,#menu .updater a{font:inherit;font-size:10px}
+#menu .updater a{color:var(--accent);text-decoration:none}
+#menu .updater a:hover{text-decoration:underline}
+@media(max-width:930px){.dch{grid-template-columns:210px minmax(0,1fr)}.dch-members{display:none}}
+@media(max-width:620px){.dch{grid-template-columns:minmax(0,1fr)}.dch-channels{display:none}.dch-messages{padding:12px 9px}.dch-composer-wrap{padding:7px 9px 10px}.dch-top{padding:0 9px}.dch-topic{display:none}}
+
+.sg{height:100%;display:flex;flex-direction:column;padding:12px;gap:10px;overflow:auto}.sg-form{display:flex;flex-direction:column;gap:6px;background:var(--panel2);border-radius:10px;padding:10px}.sg-title,.sg-body{width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;outline:none;resize:vertical}.sg-title:focus,.sg-body:focus{border-color:var(--accent)}.sg-post{align-self:flex-end}.sg-msg{color:#f87171;min-height:1.2em;margin:0}.sg-list{display:flex;flex-direction:column;gap:8px}.sg-card{background:var(--panel2);border-radius:10px;padding:10px}.sg-card-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.sg-by{color:var(--dim);font-size:11px;white-space:nowrap}.sg-card p{margin:4px 0 8px;white-space:pre-wrap}.sg-card-f{display:flex;gap:8px;align-items:center}.sg-vote{border:1px solid var(--line);background:none;color:var(--text);border-radius:999px;padding:4px 10px;cursor:pointer;font:inherit}.sg-vote.on{background:#87cf3e30;border-color:var(--accent);color:var(--accent)}.sg-del{border:0;background:none;color:#f87171;cursor:pointer;font:inherit}</style>
+</head>
+<body>
+<div id="lock" role="button" tabindex="0" aria-label="Unlock"><div id="lt">00:00 AM</div><div id="ld"></div><div id="lc">Made By DSM</div><div id="lh">Click or press any key</div></div>
+<div id="desk" class="garden"><div id="logo" style="display:none"><b>m</b></div><div id="icons"></div></div>
+<div id="menu"><input id="q" placeholder="Search apps" autocomplete="off"><div id="list"></div><div class="updater"><div class="updater-title">DSMHub updater</div><div class="updater-status" id="update-status">Check GitHub for the latest DSMHub version.</div><div class="updater-actions"><button class="btn alt" id="check-updates" type="button">Check for updates</button><a id="open-update" hidden target="_blank" rel="noopener">Open latest version</a></div></div><button class="tbtn" id="lockbtn">Lock screen</button></div>
+<div id="bar">
+  <button class="tbtn" id="start" title="Menu"><img class="g" data-ic="start" alt=""></button>
+  <div id="tasks"></div>
+  <div id="tray"><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-label="Network"><path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.2" r=".7"/></svg><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Volume"><path d="M4 10v4h4l5 4V6L8 10z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg><div id="clk"></div><button id="sd" title="Show desktop" aria-label="Show desktop"></button></div>
+</div>
+<script>
+const $=(s,e=document)=>e.querySelector(s);
+const wallpapers={Garden:'garden',Graphite:'radial-gradient(ellipse at 55% 45%,#2a2b31 0%,#141518 55%,#08080a 100%)',Forest:'linear-gradient(135deg,#0f2418,#1f4a2c 55%,#0a1510)',Dusk:'linear-gradient(160deg,#1b1233,#4a2a5e 60%,#14101f)',Ocean:'linear-gradient(150deg,#071a2b,#0f4466 60%,#06121c)'};
+const apps=[
+{ id: "custom-movies", n: "Movies", icon: "https://cdn.freepixel.com/thumb/free-svg-a-minimalist-movie-camera-icon-featuring-two-reels-th-1618-video-camera-line-c-os-279412.jpg", w: 720, h: 500, r: body => { const frame = document.createElement("iframe"); frame.title = "Movies"; frame.setAttribute("sandbox", "allow-scripts allow-forms allow-modals allow-pointer-lock"); frame.style.cssText = "width:100%;height:100%;border:0;background:white"; frame.srcdoc = "\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>DSMHub Movies</title>\n  <style>\n    * { box-sizing: border-box; }\n    body {\n      margin: 0;\n      background: #101014;\n      color: white;\n      font: 16px Arial, sans-serif;\n    }\n    header {\n      padding: 16px 20px;\n      background: #1b1b24;\n      border-bottom: 1px solid #333340;\n    }\n    header a { color: #a78bfa; }\n    iframe {\n      display: block;\n      width: 100%;\n      height: calc(100vh - 60px);\n      border: 0;\n      background: #101014;\n    }\n  </style>\n</head>\n<body>\n  <iframe\n    src=\"https://achromaon.top/pages/movies.html\"\n    title=\"Achromaon Movies\"\n    allowfullscreen>\n  </iframe>\n</body>\n</html>\n"; body.append(frame); } }
+{ id: "custom-spotify", n: "Spotify", icon: "data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2064%2064%22%3E%3Ccircle%20cx=%2232%22%20cy=%2232%22%20r=%2232%22%20fill=%22%231ed760%22/%3E%3Cpath%20d=%22M14%2024c12-5%2028-4%2038%202M17%2032c10-4%2023-3%2032%202M20%2040c8-3%2018-2%2026%202%22%20fill=%22none%22%20stroke=%22%230b1510%22%20stroke-width=%224%22%20stroke-linecap=%22round%22/%3E%3C/svg%3E", w: 720, h: 500, r: body => { const frame = document.createElement("iframe"); frame.title = "Spotify"; frame.addEventListener("load", () => { try { const style = frame.contentDocument.createElement("style"); style.textContent = `*{scrollbar-width:none!important;-ms-overflow-style:none!important}*::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}`; frame.contentDocument.head.append(style); } catch(e) {} }, {once:true}); frame.allow = "autoplay; fullscreen; gamepad; pointer-lock"; frame.style.cssText = "width:100%;height:100%;border:0;background:white"; frame.src = "https://dsmonvr.github.io/shittifylol/shittify.html"; body.append(frame); } },
+ {id:'notes',n:'Notepad',icon:'notes',w:460,h:340,r:notesApp},
+ {id:'web',n:'Browser',icon:'web',w:720,h:480,r:webApp},
+ {id:'calc',n:'Calculator',icon:'calc',w:290,h:380,r:calcApp},
+ {id:'chat',n:'Chat',icon:'chat',w:1120,h:720,r:chatApp},
+ {id:'games',n:'Games',icon:'games',w:880,h:580,r:gamesApp},
+{id:'suggest',n:'Suggestions',icon:'suggest',w:560,h:620,r:suggestApp},
+];
+const wins=[];let z=10,n=0,sel=null;
+function mk(t,tag='div',cls=''){const x=document.createElement(tag);x.className=cls;if(t!=null)x.innerHTML=t;return x}
+
+const IC={"files":["#ffb84d","#f0821e","<path d=\"M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/>"],"notes":["#5ab0ff","#2f6bdc","<path d=\"M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z\"/><path d=\"M14 3v5h5M9 13h6M9 17h4\"/>"],"web":["#38bdf8","#6366f1","<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18\"/>"],"calc":["#a78bfa","#6d3fd4","<rect x=\"5\" y=\"3\" width=\"14\" height=\"18\" rx=\"2\"/><path d=\"M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01\"/>"],"chat":["#7289da","#4752c4","<path d=\"M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-6l-5 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z\"/><path d=\"M7 10h10M7 13h7\"/>"],"games":["#f472b6","#e11d48","<path d=\"M6 11h4M8 9v4M15 12h.01M18 10h.01\"/><path d=\"M17.3 5H6.7a4 4 0 0 0-4 3.6C2.6 9.4 2 14.5 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.4-1.4a2 2 0 0 1 1.4-.6h4.4a2 2 0 0 1 1.4.6L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.5-.6-6.600-.7-7.300A4 4 0 0 0 17.3 5z\"/>"],"set":["#34d399","#0e8f6a","<path d=\"M4 7h10M18 7h2M4 17h2M10 17h10\"/><circle cx=\"16\" cy=\"7\" r=\"2\"/><circle cx=\"8\" cy=\"17\" r=\"2\"/>"],"start":["#a3e635","#3f9b1c","<path d=\"M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4\"/>"],"suggest":["#fbbf24","#d97706","<path d=\"M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.6.5 1.1 1.3 1.2 2.2h4.8c.1-.9.6-1.7 1.2-2.2A6 6 0 0 0 12 3z\"/>"]};
+const mix=(h,k)=>'#'+[1,3,5].map(i=>Math.round(parseInt(h.substr(i,2),16)*(1-k)+255*k).toString(16).padStart(2,'0')).join('');
+function builtin(n){const[a,b,p]=IC[n],d=theme==='dark';return 'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${d?a:mix(a,.82)}"/><stop offset="1" stop-color="${d?b:mix(b,.72)}"/></linearGradient></defs><rect x=".5" y=".5" width="63" height="63" rx="14.5" fill="url(#g)"/><g transform="translate(16 16) scale(1.333)" fill="none" stroke="${d?'#fff':b}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</g></svg>`)}
+document.addEventListener('error',e=>{const i=e.target;if(!i||i.tagName!=='IMG')return;
+ if(i.dataset.ic&&IC[i.dataset.ic]&&!i.dataset.fb){i.dataset.fb=1;i.src=builtin(i.dataset.ic)}
+ else if(i.dataset.l&&!i.dataset.tf){i.dataset.tf=1;i.src=tile(i.dataset.l)}},true);
+// ---- icons: where the SVG files live ----
+// Local folder by default. To use jsDelivr, push the icons folder to GitHub and use:
+// 'https://cdn.jsdelivr.net/gh/YOUR_USER/YOUR_REPO@main/icons/'
+const ICON_BASE='icons/';
+// icon files are ICON_BASE + 'dark/' or 'light/' + name + '.svg'
+let theme='dark';try{theme=localStorage.getItem('dsmhub-theme')||'dark'}catch(e){}
+let links=[];try{links=JSON.parse(localStorage.getItem('dsmhub-links')||'[]')}catch(e){}
+const saveLinks=()=>{try{localStorage.setItem('dsmhub-links',JSON.stringify(links))}catch(e){}};
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tile=l=>'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#4b5563"/><text x="32" y="43" font-size="30" text-anchor="middle" fill="#fff" font-family="sans-serif">${esc((l||'?').toUpperCase())}</text></svg>`);
+const iconSrc=name=>name==='chat'?builtin('chat'):/^(?:data:|https?:|blob:)/i.test(name)?name:ICON_BASE+theme+'/'+name+'.svg';
+function glyph(a,sm){return `<img class="g${sm?' sm':''}" data-ic="${a.icon}" data-l="${esc(a.n[0])}" alt="" src="${iconSrc(a.icon)}">`}
+function linkGlyph(x){return `<img class="g" data-l="${esc(x.n[0])}" alt="" src="${x.i?esc(x.i):tile(x.n[0])}">`}
+function setIcons(){document.querySelectorAll('img[data-ic]').forEach(i=>{delete i.dataset.fb;delete i.dataset.tf;i.src=iconSrc(i.dataset.ic)})}
+function setTheme(t){theme=t;document.documentElement.dataset.theme=t;try{localStorage.setItem('dsmhub-theme',t)}catch(e){}setIcons()}
+document.documentElement.dataset.theme=theme;setIcons();
+// desktop icons + start menu
+const icons=$('#icons');
+function drawIcons(){icons.innerHTML='';
+ const add=(html,name,open)=>{const d=mk(html+`<span>${name}</span>`,'div','ic');
+  d.onclick=e=>{e.stopPropagation();document.querySelectorAll('.ic.sel').forEach(i=>i.classList.remove('sel'));d.classList.add('sel')};
+  d.ondblclick=open;icons.append(d)};
+ apps.forEach(a=>add(glyph(a),a.n,()=>openApp(a.id)));
+ links.forEach(x=>add(linkGlyph(x),esc(x.n),()=>window.open(x.u,'_blank','noopener')))}
+drawIcons();
+$('#desk').onclick=()=>{document.querySelectorAll('.ic.sel').forEach(i=>i.classList.remove('sel'));menu(false)};
+function drawList(f=''){const l=$('#list');l.innerHTML='';apps.filter(a=>a.n.toLowerCase().includes(f.toLowerCase())).forEach(a=>{const b=mk(glyph(a)+a.n,'button','tbtn');b.onclick=()=>{openApp(a.id);menu(false)};l.append(b)});if(!l.children.length)l.append(mk('<div class="pad" style="color:var(--dim)">No apps match that search.</div>'))}
+function menu(v){const m=$('#menu');m.classList.toggle('open',v);$('#start').classList.toggle('act',v);if(v){$('#q').value='';drawList();$('#q').focus()}}
+$('#start').onclick=e=>{e.stopPropagation();menu(!$('#menu').classList.contains('open'))};
+$('#q').oninput=e=>drawList(e.target.value);
+$('#q').onkeydown=e=>{if(e.key==='Enter'){const b=$('#list .tbtn');if(b)b.click()}if(e.key==='Escape')menu(false)};
+document.addEventListener('pointerdown',e=>{if(!e.target.closest('#menu,#start'))menu(false)});
+// windows
+function openApp(id,custom){const a=custom||apps.find(x=>x.id===id);
+ const w=mk(null,'div','win');w.style.cssText=`width:${a.w}px;height:${a.h}px;left:${90+(n%8)*28}px;top:${50+(n%8)*28}px;z-index:${++z}`;n++;
+ const tb=mk(`${glyph(a,1)}<span>${a.n}</span>${a.fs?'<button class="fs" title="Fullscreen" aria-label="Fullscreen"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>':''}<button class="m" title="Minimize">–</button><button class="mx" title="Maximize">▢</button><button class="x" title="Close">✕</button>`,'div','tb');
+ const body=mk(null,'div','body');w.append(tb,body,mk(null,'div','rs'));$('#desk').append(w);
+ const btn=mk(glyph(a)+`<em>${a.n}</em>`,'button','tbtn on');$('#tasks').append(btn);
+ const o={w,btn,a};wins.push(o);a.r(body,o);focus(o);
+ const clamp=()=>{const r=$('#desk').getBoundingClientRect();w.style.left=Math.min(Math.max(parseFloat(w.style.left),-w.offsetWidth+80),r.width-60)+'px';w.style.top=Math.min(Math.max(parseFloat(w.style.top),0),r.height-36)+'px'};
+ tb.onpointerdown=e=>{if(e.target.closest('button')||w.classList.contains('max'))return;focus(o);const sx=e.clientX-w.offsetLeft,sy=e.clientY-w.offsetTop;tb.setPointerCapture(e.pointerId);tb.style.cursor='grabbing';
+  tb.onpointermove=ev=>{w.style.left=(ev.clientX-sx)+'px';w.style.top=(ev.clientY-sy)+'px'};
+  tb.onpointerup=()=>{tb.onpointermove=tb.onpointerup=null;tb.style.cursor='';clamp()}};
+ const rs=$('.rs',w);rs.onpointerdown=e=>{e.stopPropagation();focus(o);const sw=w.offsetWidth,sh=w.offsetHeight,sx=e.clientX,sy=e.clientY;rs.setPointerCapture(e.pointerId);
+  rs.onpointermove=ev=>{w.style.width=Math.max(260,sw+ev.clientX-sx)+'px';w.style.height=Math.max(160,sh+ev.clientY-sy)+'px'};rs.onpointerup=()=>rs.onpointermove=rs.onpointerup=null};
+ w.onpointerdown=()=>focus(o);
+ $('.m',w).onclick=()=>minim(o,true);
+ const fb=$('.fs',w);if(fb)fb.onclick=()=>{const cf=document.fullscreenElement||document.webkitFullscreenElement,rq=w.requestFullscreen||w.webkitRequestFullscreen;if(cf===w)(document.exitFullscreen||document.webkitExitFullscreen).call(document);else if(rq)rq.call(w);else w.classList.toggle('max')};$('.mx',w).onclick=()=>w.classList.toggle('max');tb.ondblclick=e=>{if(!e.target.closest('button'))w.classList.toggle('max')};
+ $('.x',w).onclick=()=>{if(o.onclose)try{o.onclose()}catch(e){}w.remove();btn.remove();wins.splice(wins.indexOf(o),1)};
+ btn.onclick=()=>{if(w.classList.contains('min')||sel!==o)focus(o);else minim(o,true)}}
+function focus(o){o.w.classList.remove('min');o.w.style.zIndex=++z;sel=o;wins.forEach(x=>x.btn.classList.toggle('act',x===o))}
+function minim(o,v){o.w.classList.toggle('min',v);o.btn.classList.remove('act');if(sel===o)sel=null}
+$('#sd').onclick=()=>{const all=wins.every(o=>o.w.classList.contains('min'));wins.forEach(o=>all?o.w.classList.remove('min'):minim(o,true));if(all&&wins.length)focus(wins[wins.length-1])};
+
+// The updater finds the newest index.svg commit and opens its pinned jsDelivr URL.
+(function(){
+ const button=$('#check-updates'),status=$('#update-status'),link=$('#open-update');if(!button||!status||!link)return;
+ button.onclick=async()=>{
+  button.disabled=true;status.textContent='Checking GitHub…';link.hidden=true;
+  try{
+   const response=await fetch('https://api.github.com/repos/DSMOnVR/dsmhub/commits?path=index.svg&per_page=1',{headers:{Accept:'application/vnd.github+json'},cache:'no-store'});
+   if(!response.ok)throw new Error('GitHub returned '+response.status);
+   const commits=await response.json(),latest=commits&&commits[0]&&commits[0].sha;if(!latest)throw new Error('No SVG commit found.');
+   let currentUrl=document.referrer||location.href;try{currentUrl=top.location.href||currentUrl}catch(e){}
+   const pinned=currentUrl.match(/dsmhub@([a-f0-9]{40})\/index\.svg/i);
+   status.textContent=pinned&&pinned[1]===latest?'You are already on the latest version ('+latest.slice(0,7)+').':'Latest version: '+latest.slice(0,7)+(pinned?' · update available':' · ready to open');
+   link.href='https://cdn.jsdelivr.net/gh/DSMOnVR/dsmhub@'+latest+'/index.svg';link.hidden=false
+  }catch(e){status.textContent='Could not check GitHub. Try again in a moment.'}
+  finally{button.disabled=false}
+ }
+})();
+
+// clock
+function tick(){const d=new Date();$('#clk').innerHTML=d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+`<small>${d.toLocaleDateString()}</small>`}tick();setInterval(tick,15000);
+// apps
+function filesApp(b){const f=['Documents','Downloads','Pictures','Music','Videos','Projects'];const g=mk(null,'div','fl');
+ f.forEach(x=>{const d=mk(`${glyph(apps[0])}<span>${x}</span>`,'div','ic');d.ondblclick=()=>alert(x+' is empty.');g.append(d)});b.append(g)}
+function notesApp(b){const t=mk(null,'textarea','np');t.placeholder='Start typing. Your note is saved in this browser.';try{t.value=localStorage.getItem('webos-note')||''}catch(e){}
+ t.oninput=()=>{try{localStorage.setItem('webos-note',t.value)}catch(e){}};b.append(t)}
+function webApp(b){b.innerHTML='<div class="urlbar"><input value="https://en.wikipedia.org" aria-label="Address"><button>Go</button></div><div class="pad" id="msg" style="color:var(--dim)">Enter an address and press Go. Some sites refuse to load inside other pages, so they will show blank.</div>';
+ const i=$('input',b),go=()=>{let u=i.value.trim();if(!u)return;if(!/^https?:\/\//.test(u))u='https://'+u;i.value=u;const m=$('#msg',b);if(m)m.remove();let fr=$('iframe',b);if(!fr){fr=document.createElement('iframe');b.append(fr)}fr.src=u};
+ $('button',b).onclick=go;i.onkeydown=e=>{if(e.key==='Enter')go()}}
+function calcApp(b){const s=mk('0','div','scr'),g=mk(null,'div','calc');g.append(s);let ex='';
+ '7 8 9 / 4 5 6 * 1 2 3 - 0 . C +'.split(' ').concat('=').forEach(k=>{const x=mk(k==='*'?'×':k==='/'?'÷':k,'button',k==='='?'eq':'+-*/'.includes(k)?'op':'');
+  x.onclick=()=>{if(k==='C')ex='';else if(k==='='){try{ex=String(Function('"use strict";return ('+(ex||'0')+')')())}catch(e){ex=''}}else ex+=k;s.textContent=ex||'0'};g.append(x)});b.append(g)}
+function setApp(b){
+ b.innerHTML=`<div class="pad set"><h4>Theme</h4><div class="row"><button class="btn" data-t="dark">Dark</button><button class="btn" data-t="light">Light</button></div>
+ <h4>Wallpaper</h4><div class="sw"></div>
+ <h4>Add a shortcut</h4><div class="row"><input id="sn" placeholder="Name"><input id="su" placeholder="Link (https://...)"></div>
+ <div class="row"><input id="si" placeholder="Icon URL, SVG or PNG (optional)"><button class="btn" id="sa">Add</button></div><div id="sl"></div></div>`;
+ const paint=()=>b.querySelectorAll('[data-t]').forEach(x=>x.classList.toggle('alt',x.dataset.t!==theme));
+ b.querySelectorAll('[data-t]').forEach(x=>x.onclick=()=>{setTheme(x.dataset.t);paint()});paint();
+ const sw=$('.sw',b);
+ Object.entries(wallpapers).forEach(([k,v])=>{const d=mk(null,'div');d.style.background=v==='garden'?'linear-gradient(135deg,#6aa646,#e88fb0 50%,#4f8a3e)':v;d.title=k;d.onclick=()=>{const dk=$('#desk');dk.classList.toggle('garden',v==='garden');dk.style.background=v==='garden'?'':v;$('#logo').style.display=k==='Graphite'?'':'none'};sw.append(d)});
+ const list=()=>{const l=$('#sl',b);l.innerHTML='';links.forEach((x,i)=>{const r=mk(`<span>${esc(x.n)}</span>`,'div','row');const d=mk('Remove','button','btn alt');d.onclick=()=>{links.splice(i,1);saveLinks();drawIcons();list()};r.append(d);l.append(r)})};
+ $('#sa',b).onclick=()=>{const n=$('#sn',b).value.trim();let u=$('#su',b).value.trim();const ic=$('#si',b).value.trim();if(!n||!u)return;if(!/^https?:\/\//.test(u))u='https://'+u;links.push({n,u,i:ic});saveLinks();drawIcons();list();['#sn','#su','#si'].forEach(q=>$(q,b).value='')};
+ list()}
+
+// ---- suggestions board (what should we add to DSMHub) ----
+function suggestApp(b){
+ b.innerHTML='<div class="sg"><div class="sg-form"><input class="sg-title" placeholder="Title" maxlength="80"><textarea class="sg-body" placeholder="What should DSMHub add?" rows="3" maxlength="600"></textarea><button class="btn sg-post">Post suggestion</button><p class="sg-msg"></p></div><div class="sg-list">Loading…</div></div>';
+ const titleEl=$('.sg-title',b),bodyEl=$('.sg-body',b),postBtn=$('.sg-post',b),msg=$('.sg-msg',b),list=$('.sg-list',b);
+ let acc=null,uid=null,myVotes=new Set();
+ function card(row){
+  const el=mk(null,'div','sg-card');
+  const mine=uid&&row.user_id===uid;
+  el.innerHTML=`<div class="sg-card-h"><strong>${esc(row.title)}</strong><span class="sg-by">by ${esc(row.username||'someone')}</span></div><p>${esc(row.body)}</p><div class="sg-card-f"><button class="sg-vote${myVotes.has(row.id)?' on':''}">\u25b2 <span>${row.votes||0}</span></button>${mine?'<button class="sg-del">Delete</button>':''}</div>`;
+  const vb=$('.sg-vote',el);
+  vb.onclick=async()=>{
+   if(!uid){msg.textContent='Sign in through Chat first.';return}
+   const have=myVotes.has(row.id);
+   vb.disabled=true;
+   try{
+    if(have){await acc.db.from('suggestion_votes').delete().eq('suggestion_id',row.id).eq('user_id',uid);myVotes.delete(row.id);row.votes=(row.votes||1)-1}
+    else{await acc.db.from('suggestion_votes').insert({suggestion_id:row.id,user_id:uid});myVotes.add(row.id);row.votes=(row.votes||0)+1}
+    vb.classList.toggle('on',myVotes.has(row.id));vb.querySelector('span').textContent=row.votes
+   }catch(e){msg.textContent='Could not update your vote.'}
+   vb.disabled=false
+  };
+  const db2=$('.sg-del',el);if(db2)db2.onclick=async()=>{if(!confirm('Delete this suggestion?'))return;try{await acc.db.from('suggestions').delete().eq('id',row.id);el.remove()}catch(e){msg.textContent='Could not delete.'}};
+  return el
+ }
+ async function refresh(){
+  list.innerHTML='Loading…';
+  if(!acc){list.innerHTML='<p class="sg-msg">Sign in through Chat to see and post suggestions.</p>';return}
+  try{
+   const{data,error}=await acc.db.from('suggestions').select('id,user_id,username,title,body,votes').order('votes',{ascending:false}).order('created_at',{ascending:false}).limit(200);
+   if(error)throw error;
+   myVotes=new Set();
+   if(uid){const mv=await acc.db.from('suggestion_votes').select('suggestion_id').eq('user_id',uid);if(!mv.error)myVotes=new Set((mv.data||[]).map(x=>x.suggestion_id))}
+   list.innerHTML='';
+   if(!data||!data.length){list.append(mk('No suggestions yet. Be the first.','p','sg-msg'));return}
+   data.forEach(row=>list.append(card(row)))
+  }catch(e){list.innerHTML='<p class="sg-msg">Could not load suggestions.</p>'}
+ }
+ postBtn.onclick=async()=>{
+  const title=titleEl.value.trim(),body=bodyEl.value.trim();
+  if(!title||!body){msg.textContent='Add a title and a description.';return}
+  if(!acc||!uid){msg.textContent='Sign in through Chat first.';return}
+  postBtn.disabled=true;msg.textContent='Posting\u2026';
+  try{
+   const username=(window.Clerk&&window.Clerk.user&&window.Clerk.user.username)||'someone';
+   const{error}=await acc.db.from('suggestions').insert({user_id:uid,username,title,body});
+   if(error)throw error;
+   titleEl.value='';bodyEl.value='';msg.textContent='';await refresh()
+  }catch(e){msg.textContent='Could not post your suggestion.'}
+  postBtn.disabled=false
+ };
+ (async()=>{acc=await dsmEnsureAccount();uid=dsmCurrentUserId();await refresh()})()
+}
+
+// ---- DSMHub community chat, authenticated with Clerk and stored in Supabase ----
+const DSMHUB_CHAT_DEFAULT_URL='https://vtqfeqwbuvfepjpoavrc.supabase.co';
+const DSMHUB_CHAT_CONFIG={clerkKey:'pk_test_YmV0dGVyLXBvbGVjYXQtMzAzNi5jbGVyay5hY2NvdW50cy5kZXYk',supabaseUrl:'https://vtqfeqwbuvfepjpoavrc.supabase.co',supabaseKey:'sb_publishable_vuYnS7kzgPkibt9w97AIvA_6WWtNc-e'};
+function chatReadConfig(){try{return {...DSMHUB_CHAT_CONFIG,...JSON.parse(localStorage.getItem('dsmhub-chat-connection')||'{}')}}catch(e){return {...DSMHUB_CHAT_CONFIG}}}
+function chatSaveConfig(c){try{localStorage.setItem('dsmhub-chat-connection',JSON.stringify(c))}catch(e){}}
+function chatLoadScript(name,url,publishableKey){
+ if(!window.__dsmhubChatScripts)window.__dsmhubChatScripts={};
+ if(window.__dsmhubChatScripts[name])return window.__dsmhubChatScripts[name];
+ window.__dsmhubChatScripts[name]=new Promise((resolve,reject)=>{
+  const s=document.createElement('script');s.async=true;s.crossOrigin='anonymous';s.src=url;
+  if(publishableKey)s.dataset.clerkPublishableKey=publishableKey;
+  s.onload=()=>resolve();s.onerror=()=>reject(new Error('Could not load '+name+' from its CDN.'));
+  document.head.append(s)
+ });
+ return window.__dsmhubChatScripts[name]
+}
+// ---- shared DSMHub account (same Clerk + Supabase project as chat) ----
+// Used by anything that needs to know who is signed in, without requiring
+// the Chat window to be open. Lazily loads Clerk + Supabase the same way
+// chatApp() does, and reuses the same public keys from DSMHUB_CHAT_CONFIG.
+let dsmAccountPromise=null;
+function dsmEnsureAccount(){
+ if(dsmAccountPromise)return dsmAccountPromise;
+ dsmAccountPromise=(async()=>{
+  const config=chatReadConfig();
+  if(!config.clerkKey||!config.supabaseKey||!config.supabaseUrl)return null;
+  try{
+   const domain=atob(config.clerkKey.split('_')[2]).replace(/\$$/,'');
+   if(!/^[a-z0-9.-]+$/i.test(domain))return null;
+   if(!window.supabase||!window.supabase.createClient)await chatLoadScript('supabase','https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js');
+   if(!window.Clerk){
+    await chatLoadScript('clerk-ui','https://'+domain+'/npm/@clerk/ui@1/dist/ui.browser.js');
+    await chatLoadScript('clerk-sdk','https://'+domain+'/npm/@clerk/clerk-js@6/dist/clerk.browser.js',config.clerkKey)
+   }
+   if(!window.Clerk.loaded)await window.Clerk.load({ui:{ClerkUI:window.__internal_ClerkUICtor}});
+   const clerk=window.Clerk;
+   const db=window.supabase.createClient(config.supabaseUrl,config.supabaseKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false},accessToken:async()=>clerk&&clerk.session?await clerk.session.getToken():null});
+   return {clerk,db}
+  }catch(e){console.warn('[account] could not connect',e);return null}
+ })();
+ return dsmAccountPromise
+}
+function dsmCurrentUserId(){try{return window.Clerk&&window.Clerk.user?window.Clerk.user.id:null}catch(e){return null}}
+
+// ---- game save sync (self-hosted games only; see chat message for why
+// library games loaded from other sites can't be synced the same way) ----
+async function gsLoad(gameId){
+ const acc=await dsmEnsureAccount();const uid=dsmCurrentUserId();
+ if(!acc||!uid)return null;
+ try{
+  const{data,error}=await acc.db.from('game_saves').select('data').eq('user_id',uid).eq('game_id',gameId).maybeSingle();
+  if(error){console.warn('[save-sync] load failed',error);return null}
+  return data?data.data:null
+ }catch(e){console.warn('[save-sync] load failed',e);return null}
+}
+async function gsSave(gameId,kv){
+ if(!kv||!Object.keys(kv).length)return;
+ const acc=await dsmEnsureAccount();const uid=dsmCurrentUserId();
+ if(!acc||!uid)return;
+ try{
+  const{error}=await acc.db.from('game_saves').upsert({user_id:uid,game_id:gameId,data:kv,updated_at:new Date().toISOString()});
+  if(error)console.warn('[save-sync] save failed',error)
+ }catch(e){console.warn('[save-sync] save failed',e)}
+}
+function gsReadStorage(fr){const out={};try{const ls=fr.contentWindow.localStorage;for(let i=0;i<ls.length;i++){const k=ls.key(i);out[k]=ls.getItem(k)}}catch(e){}return out}
+function gsInject(html,kv){if(!kv||!Object.keys(kv).length)return html;const boot='<script>(function(){var d='+JSON.stringify(kv)+';for(var k in d){try{localStorage.setItem(k,d[k])}catch(e){}}})();</scr'+'ipt>';return /<head[^>]*>/i.test(html)?html.replace(/<head[^>]*>/i,m=>m+boot):boot+html}
+async function attachSaveSync(fr,gameId,html){
+ const kv=await gsLoad(gameId);
+ fr.srcdoc=gsInject(html,kv);
+ let timer=null;const flush=()=>gsSave(gameId,gsReadStorage(fr));
+ fr.addEventListener('load',()=>{timer=setInterval(flush,30000)});
+ return()=>{if(timer)clearInterval(timer);flush()}
+}
+
+function chatApp(b){
+ let config=chatReadConfig(),clerk=null,db=null,activeChannel='general',subscription=null,renderedUserId='',profileName='',busy=false,authListener=null,enteringUserId='',channelRequest=0,channelSequence=0,currentRole='member',roleMap={},categories=[],pendingFiles=[];
+ const defaultCategories=[{id:'text',name:'Text Channels',position:0}];
+ const defaultChannels=[{id:'general',name:'general',topic:'The place for anything DSMHub.',category_id:'text',position:0},{id:'games',name:'games',topic:'Talk about games and what you are playing.',category_id:'text',position:1},{id:'music',name:'music',topic:'Share what you are listening to.',category_id:'text',position:2},{id:'help',name:'help',topic:'Ask the community for help.',category_id:'text',position:3}];
+ let channels=defaultChannels.map(x=>({...x}));
+ const showSetup=(problem='')=>{
+  b.innerHTML='<section class="dch-gate"><div class="dch-card"><div class="dch-brand"><span class="dch-brand-mark">D</span><span>DSMHub Community</span></div><h2>Connect your chat</h2><p>Enter the public keys for the Clerk and Supabase projects already set up for DSMHub.</p><label class="dch-field" for="dch-clerk-key">Clerk publishable key</label><input class="dch-input" id="dch-clerk-key" autocomplete="off" placeholder="pk_test_… or pk_live_…"><label class="dch-field" for="dch-supabase-url">Supabase project URL</label><input class="dch-input" id="dch-supabase-url" autocomplete="url"><label class="dch-field" for="dch-supabase-key">Supabase publishable key</label><input class="dch-input" id="dch-supabase-key" autocomplete="off" placeholder="sb_publishable_… or anon public key"><button class="dch-primary dch-setup-submit" id="dch-connect">Save and continue</button><div class="dch-error" id="dch-error"></div><div class="dch-note">These are public browser keys. Never enter a Clerk secret key or Supabase secret/service-role key. Values are saved only in this browser.</div></div></section>';
+  $('#dch-clerk-key',b).value=config.clerkKey||'';
+  $('#dch-supabase-url',b).value=config.supabaseUrl||DSMHUB_CHAT_DEFAULT_URL;
+  $('#dch-supabase-key',b).value=config.supabaseKey||'';
+  $('#dch-error',b).textContent=problem;
+  $('#dch-connect',b).onclick=async()=>{
+   const clerkKey=$('#dch-clerk-key',b).value.trim(),supabaseUrl=$('#dch-supabase-url',b).value.trim(),supabaseKey=$('#dch-supabase-key',b).value.trim(),err=$('#dch-error',b);
+   if(!/^pk_(test|live)_/.test(clerkKey)){err.textContent='Use the Clerk publishable key from your Clerk dashboard.';return}
+   if(!/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(supabaseUrl)){err.textContent='Enter the Supabase project URL.';return}
+   if(!/^(sb_publishable_[A-Za-z0-9_-]+|eyJ[A-Za-z0-9_-]+\.)/.test(supabaseKey)){err.textContent='Use the Supabase publishable/anon key, never a secret key.';return}
+   config={clerkKey,supabaseUrl:supabaseUrl.replace(/\/$/,''),supabaseKey};chatSaveConfig(config);err.textContent='Connecting…';await connect()
+  }
+ };
+ const showAuth=(problem='')=>{
+  if(!b.isConnected)return;
+  channelRequest++;const previous=subscription;subscription=null;if(previous&&db)db.removeChannel(previous).catch(()=>{})
+  renderedUserId='';
+  b.innerHTML='<section class="dch-gate"><div class="dch-card"><div class="dch-brand"><span class="dch-brand-mark">D</span><span>DSMHub Community</span></div><h2>Sign in to chat</h2><p>Use your DSMHub username account to join the community.</p><div class="dch-auth" id="dch-auth"></div><div class="dch-error" id="dch-error"></div><div class="dch-note">New here? Use the create-account link in the sign-in box. DSMHub accounts use usernames.</div></div></section>';
+  $('#dch-error',b).textContent=problem;
+  try{clerk.mountSignIn($('#dch-auth',b),{withSignUp:true,signInFallbackRedirectUrl:location.href,signUpFallbackRedirectUrl:location.href})}catch(e){$('#dch-error',b).textContent='Could not show the sign-in form: '+e.message}
+ };
+ async function connect(){
+  if(busy||!b.isConnected)return;busy=true;
+  try{
+   if(!config.clerkKey||!config.supabaseKey||!config.supabaseUrl){showSetup();return}
+   const domain=atob(config.clerkKey.split('_')[2]).replace(/\$$/,'');
+   if(!/^[a-z0-9.-]+$/i.test(domain))throw new Error('The Clerk publishable key does not contain a valid Clerk domain.');
+   if(!window.supabase||!window.supabase.createClient)await chatLoadScript('supabase','https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js');
+   if(!window.supabase||!window.supabase.createClient)throw new Error('The Supabase client did not load.');
+   if(!window.Clerk){
+    await chatLoadScript('clerk-ui','https://'+domain+'/npm/@clerk/ui@1/dist/ui.browser.js');
+    await chatLoadScript('clerk-sdk','https://'+domain+'/npm/@clerk/clerk-js@6/dist/clerk.browser.js',config.clerkKey)
+   }
+   clerk=window.Clerk;await clerk.load({ui:{ClerkUI:window.__internal_ClerkUICtor}});
+   db=window.supabase.createClient(config.supabaseUrl,config.supabaseKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false},accessToken:async()=>clerk&&clerk.session?await clerk.session.getToken():null});
+   authListener=()=>{if(!b.isConnected){try{clerk.removeListener(authListener)}catch(e){}return}if(clerk.user)enterWorkspace();else showAuth()};
+   clerk.addListener(authListener);
+   if(clerk.user)await enterWorkspace();else showAuth()
+  }catch(e){showSetup(e.message||'Could not connect to chat. Check the keys and try again.')}
+  finally{busy=false}
+ }
+ async function enterWorkspace(){
+  if(!b.isConnected||!clerk||!clerk.user)return;
+  const user=clerk.user;
+   if(renderedUserId===user.id&&$('.dch-app',b))return;
+   if(enteringUserId===user.id)return;
+   enteringUserId=user.id;
+   try{
+  const username=String(user.username||'').trim();
+  if(!username){showAuth('Your Clerk account needs a username.');return}
+  try{
+   const found=await db.from('dsmhub_profiles').select('username').eq('user_id',user.id).maybeSingle();
+   if(found.error)throw found.error;
+   if(found.data)profileName=found.data.username;
+   else{const added=await db.from('dsmhub_profiles').insert({user_id:user.id,username}).select('username').single();if(added.error)throw added.error;profileName=added.data.username}
+   }catch(e){showAuth('Could not prepare your chat profile: '+(e.message||'Check the Supabase profile table.'));return}
+   await loadPermissions();
+   await loadStructure(false);
+  renderedUserId=user.id;
+   b.innerHTML='<div class="dch dch-app"><aside class="dch-channels"><div class="dch-head"><span>DSMHub Community</span></div><div class="dch-channel-title"><span>CHANNELS</span><button class="dch-add-category" id="dch-add-category" title="Add category" aria-label="Add category" hidden>+</button></div><div class="dch-channel-list" id="dch-channel-list"></div><div class="dch-admin-note" id="dch-admin-note" hidden>Owner tools need the chat database update applied in Supabase.</div><div class="dch-server-info"><strong>DSMHub</strong>Community chat</div></aside><main class="dch-main"><header class="dch-top"><span class="dch-hash">#</span><strong id="dch-channel-title">general</strong><span class="dch-topic" id="dch-topic"></span><span class="dch-top-spacer"></span><span class="dch-connection" id="dch-status">Connecting…</span><span class="dch-user" id="dch-user"></span><span class="dch-role-badge" id="dch-current-role"></span><button class="dch-small-btn" id="dch-signout">Sign out</button></header><div class="dch-messages" id="dch-messages"></div><div class="dch-composer-wrap"><div class="dch-file-queue" id="dch-file-queue"></div><div class="dch-file-error" id="dch-file-error"></div><form class="dch-compose" id="dch-compose"><button class="dch-file-picker" id="dch-file-picker" type="button" title="Attach files" aria-label="Attach files">＋</button><input id="dch-files" type="file" multiple hidden><textarea id="dch-message" rows="1" maxlength="1500" placeholder="Message #general"></textarea><button class="dch-send" title="Send message" aria-label="Send message">➤</button></form><div class="dch-compose-help">Enter to send · Shift+Enter for a new line · attach up to 3 files (15 MB each)</div></div></main><aside class="dch-members"><h3>COMMUNITY MEMBERS</h3><div id="dch-member-list"></div></aside></div>';
+  $('#dch-user',b).textContent=profileName;
+   $('#dch-current-role',b).textContent=currentRole==='owner'?'OWNER':currentRole==='moderator'?'MOD':'MEMBER';
+   $('#dch-current-role',b).classList.toggle('owner',currentRole==='owner');
+   $('#dch-add-category',b).hidden=currentRole!=='owner';
+   $('#dch-admin-note',b).hidden=roleMap.__setup!==true;
+   $('#dch-file-picker',b).disabled=roleMap.__setup===true;
+   if(roleMap.__setup===true)$('#dch-file-picker',b).title='Apply the chat update in Supabase to enable file uploads';
+  $('#dch-signout',b).onclick=async()=>{await clerk.signOut();renderedUserId='';showAuth()};
+   $('#dch-add-category',b).onclick=addCategory;
+   renderChannels();
+   $('#dch-file-picker',b).onclick=()=>$('#dch-files',b).click();
+   $('#dch-files',b).onchange=e=>{queueFiles([...e.target.files||[]]);e.target.value=''};
+  $('#dch-compose',b).onsubmit=async e=>{
+   e.preventDefault();const input=$('#dch-message',b),body=input.value.trim();
+    if((!body&&!pendingFiles.length)||body.length>1500)return;
+    const send=$('.dch-send',b),picker=$('#dch-file-picker',b);input.disabled=true;send.disabled=true;picker.disabled=true;
+    try{
+     const attachments=await uploadPendingFiles(user.id);
+     const result=await db.from('dsmhub_chat_messages').insert({channel:activeChannel,user_id:user.id,username:profileName,body,attachments});
+     if(result.error){if(attachments.length)await db.storage.from('dsmhub-chat-attachments').remove(attachments.map(x=>x.path)).catch(()=>{});throw result.error}
+     input.value='';pendingFiles=[];renderFileQueue();$('#dch-file-error',b).textContent='';$('#dch-status',b).textContent='Connected';input.focus()
+    }catch(error){$('#dch-status',b).textContent='Message failed';$('#dch-file-error',b).textContent=error.message||'Could not send this message.'}
+    finally{input.disabled=false;send.disabled=false;picker.disabled=false}
+  };
+  $('#dch-message',b).onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#dch-compose',b).requestSubmit()}};
+  await selectChannel(activeChannel)
+ 
+   }finally{if(enteringUserId===user.id)enteringUserId=''}}
+ async function selectChannel(id){
+  const request=++channelRequest;
+  const channel=channels.find(x=>x.id===id)||channels[0];if(!channel)return;activeChannel=channel.id;
+  const q=s=>b.querySelector(s);
+  if(!q('.dch-app'))return;
+  q('#dch-channel-title').textContent=channel.name;q('#dch-topic').textContent=channel.topic;q('#dch-message').placeholder='Message #'+channel.name;
+  b.querySelectorAll('.dch-channel').forEach(x=>x.classList.toggle('active',x.dataset.channel===channel.id));
+  const previous=subscription;subscription=null;
+  if(previous&&db)await db.removeChannel(previous).catch(()=>{});
+  if(request!==channelRequest||!q('.dch-app'))return;
+  const box=q('#dch-messages');box.innerHTML='';
+  const welcome=document.createElement('div');welcome.className='dch-welcome';
+  const bubble=document.createElement('div');bubble.className='dch-hash';bubble.textContent='#';
+  const heading=document.createElement('h2');heading.textContent='Welcome to #'+channel.name;
+  const detail=document.createElement('p');detail.textContent='This is the start of the #'+channel.name+' channel.';
+  welcome.append(bubble,heading,detail);box.append(welcome);q('#dch-status').textContent='Loading…';
+  let result;
+  try{result=await db.from('dsmhub_chat_messages').select('id,channel,user_id,username,body,attachments,created_at').eq('channel',channel.id).order('created_at',{ascending:true}).limit(100)}catch(error){result={data:[],error}}
+  if(result.error)try{result=await db.from('dsmhub_chat_messages').select('id,channel,user_id,username,body,created_at').eq('channel',channel.id).order('created_at',{ascending:true}).limit(100);(result.data||[]).forEach(x=>x.attachments=[])}catch(error){result={data:[],error}}
+  if(request!==channelRequest||!q('.dch-app'))return;
+  if(result.error){q('#dch-status').textContent='Chat unavailable';const err=document.createElement('div');err.className='dch-empty';err.textContent=result.error.message||'Could not load messages.';box.append(err);return}
+  for(const message of result.data||[])appendMessage(message);
+  try{
+   let next=db.channel('dsmhub-'+channel.id+'-'+(++channelSequence))
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'dsmhub_chat_messages',filter:'channel=eq.'+channel.id},payload=>appendMessage(payload.new));
+   if(roleMap.__setup!==true)next=next
+    .on('postgres_changes',{event:'DELETE',schema:'public',table:'dsmhub_chat_messages',filter:'channel=eq.'+channel.id},payload=>removeMessageRow(payload.old&&payload.old.id))
+    .on('postgres_changes',{event:'*',schema:'public',table:'dsmhub_chat_categories'},()=>loadStructure(true))
+    .on('postgres_changes',{event:'*',schema:'public',table:'dsmhub_chat_channels'},()=>loadStructure(true))
+    .on('postgres_changes',{event:'*',schema:'public',table:'dsmhub_chat_roles'},()=>loadPermissions().then(loadMembers));
+   subscription=next;
+   next.subscribe((status,error)=>{if(request!==channelRequest)return;const state=q('#dch-status');if(!state)return;if(status==='SUBSCRIBED')state.textContent='Connected';else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){state.textContent='Live updates unavailable';if(error)console.warn('DSMHub chat realtime subscription:',error)}else if(status==='CLOSED')state.textContent='Disconnected';else state.textContent='Connecting…'});
+  }catch(error){q('#dch-status').textContent='Live updates unavailable';console.warn('DSMHub chat realtime subscription:',error)}
+  loadMembers()
+ }
+ function renderChannels(){
+  const list=$('#dch-channel-list',b);if(!list)return;list.replaceChildren();
+  for(const category of [...categories].sort((a,b)=>a.position-b.position||a.name.localeCompare(b.name))){
+   const section=document.createElement('section');section.className='dch-category';
+   const head=document.createElement('div');head.className='dch-category-head';const title=document.createElement('span');title.textContent=category.name;
+   head.append(title);
+   if(currentRole==='owner'){const add=document.createElement('button');add.type='button';add.className='dch-category-add';add.textContent='+';add.title='Add text channel';add.setAttribute('aria-label','Add text channel to '+category.name);add.onclick=()=>addChannel(category.id);head.append(add)}
+   section.append(head);
+   for(const channel of channels.filter(x=>x.category_id===category.id).sort((a,b)=>a.position-b.position||a.name.localeCompare(b.name))){const button=mk('<span class="dch-hash">#</span><span>'+esc(channel.name)+'</span>','button','dch-channel');button.dataset.channel=channel.id;button.onclick=()=>selectChannel(channel.id);button.classList.toggle('active',activeChannel===channel.id);section.append(button)}
+   list.append(section)
+  }
+ }
+ async function loadStructure(refresh=true){
+  if(!db)return;
+  let categoryResult,channelResult;try{[categoryResult,channelResult]=await Promise.all([db.from('dsmhub_chat_categories').select('id,name,position').order('position'),db.from('dsmhub_chat_channels').select('id,name,topic,category_id,position').order('position')])}catch(error){categories=defaultCategories.map(x=>({...x}));channels=defaultChannels.map(x=>({...x}));if(refresh)renderChannels();return}
+  if(categoryResult.error||channelResult.error){categories=defaultCategories.map(x=>({...x}));channels=defaultChannels.map(x=>({...x}));if(refresh)renderChannels();return}
+  categories=categoryResult.data&&categoryResult.data.length?categoryResult.data:defaultCategories.map(x=>({...x}));
+  channels=channelResult.data&&channelResult.data.length?channelResult.data:defaultChannels.map(x=>({...x}));
+  if(refresh){renderChannels();if(!channels.some(x=>x.id===activeChannel)&&channels.length)selectChannel(channels[0].id)}
+ }
+ async function loadPermissions(){
+  let result;try{result=await db.from('dsmhub_chat_roles').select('user_id,role')}catch(error){result={error}}
+  if(result.error){roleMap={__setup:true};currentRole='member'}
+  else{roleMap=Object.fromEntries((result.data||[]).map(x=>[x.user_id,x.role]));currentRole=roleMap[clerk.user.id]||'member'}
+  const badge=$('#dch-current-role',b);if(badge){badge.textContent=currentRole==='owner'?'OWNER':currentRole==='moderator'?'MOD':'MEMBER';badge.classList.toggle('owner',currentRole==='owner')}
+  const add=$('#dch-add-category',b);if(add)add.hidden=currentRole!=='owner';
+  const note=$('#dch-admin-note',b);if(note)note.hidden=roleMap.__setup!==true;
+  const picker=$('#dch-file-picker',b);if(picker){picker.disabled=roleMap.__setup===true;if(roleMap.__setup===true)picker.title='Apply the chat update in Supabase to enable file uploads'}
+  renderChannels()
+ }
+ async function addCategory(){
+  if(currentRole!=='owner')return;
+  const name=prompt('Category name');if(!name||!name.trim())return;
+  const id=slug(name);if(!id){alert('Use letters or numbers in the category name.');return}
+  const result=await db.from('dsmhub_chat_categories').insert({id,name:name.trim().slice(0,40),position:categories.length});
+  if(result.error){alert('Could not add category: '+result.error.message);return}await loadStructure(true)
+ }
+ async function addChannel(categoryId){
+  if(currentRole!=='owner')return;
+  const name=prompt('Text channel name');if(!name||!name.trim())return;
+  const id=slug(name);if(!id){alert('Use letters or numbers in the channel name.');return}
+  const topic=(prompt('Channel description (optional)')||'').trim().slice(0,120),position=channels.filter(x=>x.category_id===categoryId).length;
+  const result=await db.from('dsmhub_chat_channels').insert({id,name:name.trim().replace(/^#+/,'').slice(0,40),topic,category_id:categoryId,position});
+  if(result.error){alert('Could not add channel: '+result.error.message);return}await loadStructure(true)
+ }
+ function slug(value){return String(value||'').toLowerCase().trim().replace(/^#+/,'').replace(/[^a-z0-9_-]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)}
+ function queueFiles(files){
+  const error=$('#dch-file-error',b);error.textContent='';
+  for(const file of files){if(pendingFiles.length>=3){error.textContent='Attach up to 3 files to one message.';break}if(file.size>15*1024*1024){error.textContent=file.name+' is over the 15 MB file limit.';continue}pendingFiles.push(file)}
+  renderFileQueue()
+ }
+ function renderFileQueue(){
+  const queue=$('#dch-file-queue',b);if(!queue)return;queue.replaceChildren();
+  pendingFiles.forEach((file,index)=>{const chip=document.createElement('div');chip.className='dch-file-chip';const name=document.createElement('span');name.textContent=file.name+' · '+(file.size<1024*1024?Math.ceil(file.size/1024)+' KB':(file.size/1024/1024).toFixed(1)+' MB');const remove=document.createElement('button');remove.type='button';remove.textContent='×';remove.setAttribute('aria-label','Remove '+file.name);remove.onclick=()=>{pendingFiles.splice(index,1);renderFileQueue()};chip.append(name,remove);queue.append(chip)})
+ }
+ async function uploadPendingFiles(userId){
+  const uploaded=[];
+  for(let i=0;i<pendingFiles.length;i++){
+   const file=pendingFiles[i];$('#dch-status',b).textContent='Uploading '+(i+1)+' of '+pendingFiles.length+'…';
+   const safeName=file.name.replace(/[\\/\u0000-\u001f]/g,'_').slice(0,120)||'file';const path=userId+'/'+crypto.randomUUID()+'-'+safeName;
+   const result=await db.storage.from('dsmhub-chat-attachments').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'application/octet-stream'});
+   if(result.error){if(uploaded.length)await db.storage.from('dsmhub-chat-attachments').remove(uploaded.map(x=>x.path)).catch(()=>{});throw result.error}
+   uploaded.push({path,name:file.name.slice(0,180),type:file.type||'application/octet-stream',size:file.size})
+  }
+  return uploaded
+ }
+ function removeMessageRow(id){if(!id)return;const box=$('#dch-messages',b);const row=box&&[...box.querySelectorAll('.dch-message')].find(x=>x.dataset.messageId===String(id));if(row)row.remove()}
+ async function deleteMessage(message){
+  if(roleMap.__setup===true||!(message.user_id===clerk.user.id||currentRole==='owner'||currentRole==='moderator'))return;
+  if(!confirm('Delete this message?'))return;
+  const result=await db.from('dsmhub_chat_messages').delete().eq('id',message.id).select('id');
+  if(result.error){alert('Could not delete this message: '+result.error.message);return}
+  removeMessageRow(message.id);
+  const attachments=Array.isArray(message.attachments)?message.attachments:[];
+  if(attachments.length)await db.storage.from('dsmhub-chat-attachments').remove(attachments.map(x=>x.path)).catch(()=>{})
+ }
+ async function setModerator(member){
+  if(currentRole!=='owner'||member.user_id===clerk.user.id)return;
+  const isMod=roleMap[member.user_id]==='moderator';
+  const result=isMod?await db.from('dsmhub_chat_roles').delete().eq('user_id',member.user_id).eq('role','moderator'):await db.from('dsmhub_chat_roles').upsert({user_id:member.user_id,role:'moderator'},{onConflict:'user_id'});
+  if(result.error){alert('Could not update moderator role: '+result.error.message);return}
+  await loadPermissions();await loadMembers()
+ }
+ async function appendAttachmentList(message,container){
+  const attachments=Array.isArray(message.attachments)?message.attachments:[];if(!attachments.length)return;
+  const wrap=document.createElement('div');wrap.className='dch-attachments';container.append(wrap);
+  for(const attachment of attachments){if(!attachment||typeof attachment.path!=='string')continue;
+   const storage=db.storage.from('dsmhub-chat-attachments'),isImage=/^image\/(png|jpe?g|gif|webp|avif|svg\+xml)$/i.test(attachment.type||'');
+   const preview=isImage?await storage.createSignedUrl(attachment.path,3600):null;
+   const download=await storage.createSignedUrl(attachment.path,3600,{download:true});
+   if(download.error){const unavailable=document.createElement('span');unavailable.className='dch-file-error';unavailable.textContent='Attachment unavailable: '+(attachment.name||'file');wrap.append(unavailable);continue}
+   const link=document.createElement('a');link.className='dch-attachment';link.href=download.data.signedUrl;link.target='_blank';link.rel='noopener noreferrer';link.textContent='↓ '+(attachment.name||'Download file');wrap.append(link);
+   if(isImage&&preview&&!preview.error){const imageLink=document.createElement('a');imageLink.href=preview.data.signedUrl;imageLink.target='_blank';imageLink.rel='noopener noreferrer';const image=document.createElement('img');image.className='dch-attachment-preview';image.src=preview.data.signedUrl;image.alt=attachment.name||'Image attachment';image.loading='lazy';imageLink.append(image);wrap.insertBefore(imageLink,link)}
+  }
+ }
+ function appendMessage(message){
+  const box=$('#dch-messages',b);if(!box||!message)return;
+  if([...box.querySelectorAll('.dch-message')].some(x=>x.dataset.messageId===String(message.id)))return;
+  const row=document.createElement('article');row.className='dch-message';row.dataset.messageId=message.id;
+  const avatar=document.createElement('div');avatar.className='dch-avatar';avatar.textContent=String(message.username||'?').slice(0,1).toUpperCase();
+  const content=document.createElement('div');content.className='dch-msg-content';const head=document.createElement('div');head.className='dch-msg-head';
+  const name=document.createElement('strong');name.textContent=message.username||'Unknown';const time=document.createElement('time');const stamp=new Date(message.created_at);time.textContent=Number.isNaN(stamp.getTime())?'':stamp.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+  const body=document.createElement('div');body.className='dch-msg-body';body.textContent=message.body||'';
+  head.append(name,time);
+  if(roleMap.__setup!==true&&(message.user_id===clerk.user.id||currentRole==='owner'||currentRole==='moderator')){const tools=document.createElement('div');tools.className='dch-message-tools';const remove=document.createElement('button');remove.type='button';remove.className='dch-message-delete';remove.textContent='Delete';remove.onclick=()=>deleteMessage(message);tools.append(remove);head.append(tools)}
+  content.append(head,body);row.append(avatar,content);box.append(row);appendAttachmentList(message,content).then(()=>{box.scrollTop=box.scrollHeight}).catch(error=>console.warn('Chat attachment preview:',error));box.scrollTop=box.scrollHeight
+ }
+ async function loadMembers(){
+  const list=$('#dch-member-list',b);if(!list)return;list.innerHTML='';
+  const {data,error}=await db.from('dsmhub_profiles').select('user_id,username').order('username').limit(100);
+  if(error){list.textContent='Members are unavailable.';return}
+  for(const member of data||[]){const row=document.createElement('div');row.className='dch-member';const avatar=document.createElement('span');avatar.className='dch-avatar';avatar.textContent=String(member.username||'?').slice(0,1).toUpperCase();const name=document.createElement('span');name.className='dch-member-name';name.textContent=member.username;row.append(avatar,name);const role=roleMap[member.user_id];if(role==='owner'||role==='moderator'){const badge=document.createElement('span');badge.className='dch-role-badge'+(role==='owner'?' owner':'');badge.textContent=role==='owner'?'OWNER':'MOD';row.append(badge)}if(currentRole==='owner'&&member.user_id!==clerk.user.id){const tools=document.createElement('span');tools.className='dch-member-tools';const manage=document.createElement('button');manage.type='button';manage.className='dch-manage-member';manage.textContent=role==='moderator'?'Remove mod':'Make mod';manage.onclick=()=>setModerator(member);tools.append(manage);row.append(tools)}list.append(row)}
+ }
+ if(config.clerkKey&&config.supabaseKey&&config.supabaseUrl)connect();else showSetup()
+}
+
+// ---- games (encrypted) ----
+// Files in games/ are AES-GCM encrypted with your code, so nobody can read the game source on GitHub without it.
+// Make them with encrypt.html, then upload the .enc files and index.json to the games/ folder.
+const KDF=1000;
+// Games open with no code. This key is baked in (encrypt.html has the same one). If you change it, re-encrypt your games.
+const GAMES_KEY='3d55bf4b0663c90ef947553c929df7be';
+const gcode=GAMES_KEY;
+const gp=n=>n.includes('/')?n:'games/'+n,isEnc=f=>/\.enc$/i.test(f);
+async function gdec(code,buf){const u=new Uint8Array(buf),k0=await crypto.subtle.importKey('raw',new TextEncoder().encode(code),'PBKDF2',false,['deriveKey']),key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:u.slice(0,16),iterations:KDF,hash:'SHA-256'},k0,{name:'AES-GCM',length:256},false,['decrypt']);return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:u.slice(16,28)},key,u.slice(28))))}
+async function glist(){const r=await fetch('games/index.json',{cache:'no-cache'});return r.ok?await r.json():[]}
+function gamesApp(b){
+ b.innerHTML='<div class="gm"><div class="gg"><div class="gs"><input type="search" placeholder="Search games" aria-label="Search games"></div><div class="gr">Loading…</div></div></div>';
+ const gr=$('.gr',b),q=$('.gs input',b);let tabs=[];
+ const GP='<svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+IC.games[2]+'</svg>';
+ async function loadAll(){const src=(await glist().catch(()=>[])).map(f=>({f:gp(f)}));
+  tabs=await Promise.all(src.map(async s=>{const nm=s.f.split('/').pop();try{if(isEnc(s.f)){const r=await fetch(s.f);if(!r.ok)throw 0;const o=await gdec(gcode,await r.arrayBuffer());return {...s,n:o.n||nm,h:o.h,t:o.t}}return {...s,n:nm}}catch(e){return {...s,n:nm,bad:1}}}));
+  tabs.sort((x,y)=>x.n.localeCompare(y.n))}
+ function playGame(t){const gid=(t.f.split('/').pop()||t.n).replace(/\.[^.]+$/,'');openApp('games',{id:'games',fs:true,n:t.n,icon:'games',w:860,h:600,r:(body,win)=>{const fr=document.createElement('iframe');fr.title=t.n;fr.allow='fullscreen; autoplay; gamepad; pointer-lock';fr.setAttribute('allowfullscreen','');fr.style.cssText='position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff';body.append(fr);if(t.h!=null){attachSaveSync(fr,gid,t.h).then(stop=>{win.onclose=stop})}else fr.src=t.f}})}
+ function renderGrid(){gr.innerHTML='';const k=q.value.trim().toLowerCase(),list=tabs.filter(t=>t.n.toLowerCase().includes(k));
+  if(!list.length){gr.append(mk(tabs.length?'No games match your search.':'No games yet. Encrypt them with encrypt.html, upload them to the games folder, and list them in games/index.json.','p','gn'));return}
+  list.forEach(t=>{const ok=t.t&&!t.bad,el=mk(null,'button','tile'+(ok?'':' ph')+(t.bad?' bad':''));el.title=t.bad?'Could not load this game. Check the path and the code.':t.n;
+   if(ok){const im=document.createElement('img');im.alt='';im.src=t.t;el.append(im)}else el.insertAdjacentHTML('beforeend',GP);
+   el.append(mk(esc(t.n),'span'));el.onclick=()=>{if(!t.bad)playGame(t)};gr.append(el)})}
+ q.oninput=renderGrid;loadAll().then(renderGrid)}
+// lock screen
+const lock=$('#lock');
+function lockTick(){const d=new Date();$('#lt').textContent=d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});$('#ld').textContent=d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}
+lockTick();setInterval(lockTick,1000);
+function unlock(){lock.classList.add('gone')}
+function relock(){menu(false);wins.filter(o=>o.a.id==='games').forEach(o=>$('.x',o.w).click());lock.classList.remove('gone')}
+lock.onclick=unlock;
+document.addEventListener('keydown',e=>{if(!lock.classList.contains('gone')){e.preventDefault();unlock()}});
+$('#lockbtn').onclick=relock;
+openApp('notes');
+</script>
+</body>
+</html>
