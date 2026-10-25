@@ -249,6 +249,21 @@ img.g,.tbtn img.g{border-radius:23%;display:block;object-fit:contain;box-shadow:
 const $=(s,e=document)=>e.querySelector(s);
 const wallpapers={Garden:'garden',Graphite:'radial-gradient(ellipse at 55% 45%,#2a2b31 0%,#141518 55%,#08080a 100%)',Forest:'linear-gradient(135deg,#0f2418,#1f4a2c 55%,#0a1510)',Dusk:'linear-gradient(160deg,#1b1233,#4a2a5e 60%,#14101f)',Ocean:'linear-gradient(150deg,#071a2b,#0f4466 60%,#06121c)'};
 const apps=[
+  {
+    id: "proxy", 
+    n: "GUST | Proxy", 
+    icon: "web", 
+    w: 720, 
+    h: 500, 
+    r: body => { 
+        const frame = document.createElement("iframe"); 
+        frame.title = "GUST | Proxy"; 
+        frame.setAttribute("sandbox", "allow-scripts allow-forms allow-modals allow-pointer-lock allow-same-origin"); 
+        frame.style.cssText = "width:100%;height:100%;border:0;background:white"; 
+        frame.src = "games/random.html"; // Clean, no escaping issues!
+        body.appendChild(frame); 
+    }
+}
 { id: "custom-movies", n: "Movies", icon: "https://cdn.freepixel.com/thumb/free-svg-a-minimalist-movie-camera-icon-featuring-two-reels-th-1618-video-camera-line-c-os-279412.jpg", w: 720, h: 500, r: body => { const frame = document.createElement("iframe"); frame.title = "Movies"; frame.setAttribute("sandbox", "allow-scripts allow-forms allow-modals allow-pointer-lock"); frame.style.cssText = "width:100%;height:100%;border:0;background:white"; frame.srcdoc = "\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>DSMHub Movies</title>\n  <style>\n    * { box-sizing: border-box; }\n    body {\n      margin: 0;\n      background: #101014;\n      color: white;\n      font: 16px Arial, sans-serif;\n    }\n    header {\n      padding: 16px 20px;\n      background: #1b1b24;\n      border-bottom: 1px solid #333340;\n    }\n    header a { color: #a78bfa; }\n    iframe {\n      display: block;\n      width: 100%;\n      height: calc(100vh - 60px);\n      border: 0;\n      background: #101014;\n    }\n  </style>\n</head>\n<body>\n  <iframe\n    src=\"https://zxcstream.com\"\n    title=\"Achromaon Movies\"\n    allowfullscreen>\n  </iframe>\n</body>\n</html>\n"; body.append(frame); } },
 { id: "custom-spotify", n: "Spotify", icon: "data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2064%2064%22%3E%3Ccircle%20cx=%2232%22%20cy=%2232%22%20r=%2232%22%20fill=%22%231ed760%22/%3E%3Cpath%20d=%22M14%2024c12-5%2028-4%2038%202M17%2032c10-4%2023-3%2032%202M20%2040c8-3%2018-2%2026%202%22%20fill=%22none%22%20stroke=%22%230b1510%22%20stroke-width=%224%22%20stroke-linecap=%22round%22/%3E%3C/svg%3E", w: 720, h: 500, r: body => { const frame = document.createElement("iframe"); frame.title = "Spotify"; frame.addEventListener("load", () => { try { const style = frame.contentDocument.createElement("style"); style.textContent = `*{scrollbar-width:none!important;-ms-overflow-style:none!important}*::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}`; frame.contentDocument.head.append(style); } catch(e) {} }, {once:true}); frame.allow = "autoplay; fullscreen; gamepad; pointer-lock"; frame.style.cssText = "width:100%;height:100%;border:0;background:white"; frame.src = "https://dsmonvr.github.io/shittifylol/shittify.html"; body.append(frame); } },
  {id:'notes',n:'Notepad',icon:'notes',w:460,h:340,r:notesApp},
