@@ -365,7 +365,7 @@ setInterval(dockDateTick,60000);dockDateTick();
 
 // ---- wallpapers: your own upload (this session only) or a preset (persists) ----
 // Add your own found/made presets here: {n:'Name', type:'image'|'video', src:'https://...'}
-const WALLPAPER_PRESETS=[];
+const WALLPAPER_PRESETS=[{n:'Minecraft Cherry Blossom', type:'video', src:'https://www.youtube.com/watch?v=0EWcxtOAJE4&list=RD0EWcxtOAJE4&start_radio=1'}];
 function applyWallpaper(w){
  const desk=$('#desk');let v=$('#desk-video');
  if(w&&w.type==='video'){
