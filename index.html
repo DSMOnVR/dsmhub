@@ -9,7 +9,7 @@
 :root{--bg:#0d0d0f;--panel:#17181c;--panel2:#202228;--line:#2c2e35;--text:#f1f2f4;--dim:#9a9ca6;--accent:#87cf3e;--wall:radial-gradient(ellipse at 55% 45%,#2a2b31 0%,#141518 55%,#08080a 100%);box-sizing:border-box}
 *{box-sizing:border-box;margin:0}*{scrollbar-width:none!important;-ms-overflow-style:none!important}*::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font:13px/1.35 Poppins,system-ui,sans-serif;user-select:none}
-#desk{position:fixed;inset:0 0 48px 0;background:var(--wall);background-size:cover}
+#desk{position:fixed;inset:0;background:var(--wall);background-size:cover}
 #logo{position:absolute;left:50%;top:46%;width:240px;height:240px;transform:translate(-50%,-50%) rotate(-18deg);border-radius:50%;border:16px solid #d8d9dd;box-shadow:0 20px 60px #000a,inset 0 0 20px #0008;opacity:.9;display:grid;place-items:center;pointer-events:none}
 #logo b{font-size:96px;color:#d8d9dd;letter-spacing:-6px}
 #icons{position:absolute;left:8px;top:8px;bottom:8px;display:grid;grid-template-columns:repeat(2,84px);grid-auto-rows:92px;grid-auto-flow:row;align-content:start;gap:0}
@@ -25,24 +25,57 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .tb button:hover{background:#ffffff1c;color:var(--text)}.tb .x:hover{background:#e5484d;color:#fff}
 .body{flex:1;overflow:auto;position:relative;min-height:0}
 .rs{position:absolute;right:0;bottom:0;width:16px;height:16px;cursor:nwse-resize}
-#bar{position:fixed;left:0;right:0;bottom:0;height:48px;padding-bottom:env(safe-area-inset-bottom,0px);background:var(--panel);border-top:1px solid var(--line);display:flex;align-items:center;gap:2px;padding-left:6px;padding-right:6px;z-index:9999}
-.tbtn{height:40px;min-width:40px;padding:0 8px;border:0;border-radius:7px;background:none;color:var(--text);display:flex;align-items:center;gap:7px;cursor:pointer;font:inherit;position:relative}
-.tbtn:hover{background:#ffffff14}
-.tbtn.on::after{content:"";position:absolute;left:8px;right:8px;bottom:2px;height:3px;border-radius:2px;background:var(--accent)}
-.tbtn.act{background:#ffffff1a}
+#bar{position:fixed;left:50%;bottom:calc(10px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);max-width:calc(100vw - 20px);height:60px;background:#1c1d22b3;backdrop-filter:blur(18px) saturate(1.3);border:1px solid #ffffff1c;border-radius:18px;box-shadow:0 10px 30px #000a;display:flex;align-items:center;gap:4px;padding:0 8px;z-index:9999}
+.tbtn{height:46px;min-width:46px;padding:0 8px;border:0;border-radius:11px;background:none;color:var(--text);display:flex;align-items:center;gap:7px;cursor:pointer;font:inherit;position:relative;transition:transform .12s ease}
+.tbtn:hover{background:none;transform:translateY(-6px)}
+.tbtn.on::after{content:"";position:absolute;left:50%;bottom:-7px;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--text)}
+.tbtn.act{background:none}
 .tbtn .g{width:28px;height:28px;font-size:17px;border-radius:7px;box-shadow:none}
-#tasks{display:flex;gap:2px;flex:1;overflow:hidden}
-#tasks .tbtn{max-width:170px}#tasks .tbtn em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
-#tray{display:flex;align-items:center;gap:12px;color:var(--dim);padding-right:2px}
+#bar #start .g,#bar #tasks .g{width:40px;height:40px;border-radius:10px}
+#dock-sep{width:1px;align-self:stretch;margin:10px 4px;background:#ffffff26;flex:none}
+#tasks{display:flex;align-items:center;gap:4px}
+#dock-pinned{display:flex;align-items:center;gap:4px}
+#dock-date{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 12px;line-height:1.1;color:var(--text);min-width:52px}
+#dd-day{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--dim)}
+#dd-date{font-size:15px;font-weight:600}
+#traytop{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:calc(10px + env(safe-area-inset-right,0px));display:flex;align-items:center;gap:12px;color:var(--dim);background:#1c1d22b3;backdrop-filter:blur(18px) saturate(1.3);border:1px solid #ffffff1c;border-radius:999px;padding:7px 14px;z-index:9999}
 #clk{text-align:right;line-height:1.15;color:var(--text);font-size:12.5px}#clk small{display:block;color:var(--dim);font-size:10.5px}
 #sd{width:16px;height:22px;border:1.5px solid var(--dim);border-radius:3px;background:none;cursor:pointer}
 #sd:hover{border-color:var(--text)}
-#menu{position:fixed;left:6px;bottom:54px;width:340px;max-height:70vh;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 14px 44px #000b;display:none;flex-direction:column;z-index:9998;overflow:hidden}
+#menu{position:fixed;inset:0;background:#0b0c0ecc;backdrop-filter:blur(18px) saturate(1.1);display:none;z-index:9998;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) calc(48px + env(safe-area-inset-bottom,0px)) env(safe-area-inset-left,0px)}
 #menu.open{display:flex}
-#menu input{margin:10px;padding:9px 12px;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--text);font:inherit;outline:none;user-select:text}
+#menu-left{width:min(420px,46vw);height:100%;padding:28px 18px;display:flex;flex-direction:column;gap:14px;border-right:1px solid #ffffff14}
+#menu input{padding:12px 14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;color:var(--text);font:inherit;outline:none;user-select:text;flex:none}
 #menu input:focus{border-color:var(--accent)}
-#list{overflow:auto;padding:0 6px 8px}
-#list .tbtn{width:100%;height:44px}
+.menu-h{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);flex:none}
+#list{flex:1;min-height:0;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:4px;align-content:start}
+.apptile{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px 26px;border:0;background:none;color:var(--text);border-radius:10px;cursor:pointer;text-align:center;font:inherit}
+.apptile:hover{background:#ffffff14}
+.apptile-actions{position:absolute;left:4px;right:4px;bottom:4px;display:flex;gap:3px;opacity:0;transition:opacity .12s}
+.apptile:hover .apptile-actions,.apptile:focus-within .apptile-actions{opacity:1}
+.pin{flex:1;font-size:9px;padding:3px 2px;border-radius:5px;background:#ffffff1c;color:var(--dim);text-align:center}
+.pin:hover{background:#ffffff33;color:var(--text)}
+.pin.on{background:var(--accent);color:#10150a}
+.wp{height:100%;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:8px}
+.wp-h{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-top:8px}
+.wp-note{color:var(--dim);font-size:11.5px;margin:0}
+.wp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
+.wp-card{aspect-ratio:16/10;border-radius:10px;border:2px solid var(--line);background:var(--panel2);color:var(--text);cursor:pointer;display:flex;align-items:flex-end;padding:6px;font-size:11px}
+.wp-card.on{border-color:var(--accent)}
+.wp-reset{align-self:flex-start;margin-top:6px}
+.apptile span{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.apptile .g{width:40px;height:40px}
+.pad-dim{grid-column:1/-1;color:var(--dim);padding:16px 4px}
+#menu-acct{flex:none;display:flex;flex-direction:column;gap:8px;padding-top:10px;border-top:1px solid #ffffff14}
+.acct-row{display:flex;align-items:center;gap:10px;padding:4px 2px}
+.acct-av{width:28px;height:28px;border-radius:50%;background:var(--accent);color:#10150a;display:grid;place-items:center;font:600 12px Poppins,sans-serif;flex:none}
+#menu-acct .tbtn{width:100%;height:40px;justify-content:center;background:var(--panel2);border-radius:8px}
+#menu-right{flex:1;display:flex;align-items:flex-end;justify-content:center;padding:0 0 10vh}
+#menu-date{text-align:center;text-shadow:0 2px 10px #000a}
+#md-day{font:32px 'Press Start 2P',monospace;letter-spacing:2px;color:#fff}
+#md-date{font:22px VT323,monospace;letter-spacing:2px;color:#e8e9ec;margin-top:10px}
+#md-time{font:17px VT323,monospace;letter-spacing:2px;color:var(--dim);margin-top:4px}
+@media (max-width:720px){#menu{flex-direction:column}#menu-left{width:100%;height:auto;flex:1;border-right:0;border-bottom:1px solid #ffffff14}#menu-right{padding-bottom:4vh}#md-day{font-size:20px}#md-date{font-size:17px}}
 .pad{padding:14px}
 textarea.np{width:100%;height:100%;border:0;resize:none;background:#111215;color:var(--text);font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;padding:12px;outline:none;user-select:text}
 .calc{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:10px;height:100%;grid-auto-rows:1fr}
@@ -239,11 +272,25 @@ img.g,.tbtn img.g{border-radius:23%;display:block;object-fit:contain;box-shadow:
 <body>
 <div id="lock" role="button" tabindex="0" aria-label="Unlock"><div id="lt">00:00 AM</div><div id="ld"></div><div id="lc">Made By DSM</div><div id="lh">Click or press any key</div></div>
 <div id="desk" class="garden"><div id="logo" style="display:none"><b>m</b></div><div id="icons"></div></div>
-<div id="menu"><input id="q" placeholder="Search apps" autocomplete="off"><div id="list"></div><div class="updater"><div class="updater-title">DSMHub updater</div><div class="updater-status" id="update-status">Check GitHub for the latest DSMHub version.</div><div class="updater-actions"><button class="btn alt" id="check-updates" type="button">Check for updates</button><a id="open-update" hidden target="_blank" rel="noopener">Open latest version</a></div></div><button class="tbtn" id="lockbtn">Lock screen</button></div>
+<div id="menu">
+ <div id="menu-left">
+  <input id="q" placeholder="Search apps" autocomplete="off">
+  <div class="menu-h">Apps</div>
+  <div id="list"></div>
+  <div id="menu-acct"></div>
+ </div>
+ <div id="menu-right">
+  <div id="menu-date"><div id="md-day"></div><div id="md-date"></div><div id="md-time"></div></div>
+ </div>
+</div>
+<div id="traytop"><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-label="Network"><path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.2" r=".7"/></svg><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Volume"><path d="M4 10v4h4l5 4V6L8 10z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg><div id="clk"></div><button id="sd" title="Show desktop" aria-label="Show desktop"></button></div>
 <div id="bar">
-  <button class="tbtn" id="start" title="Menu"><img class="g" data-ic="start" alt=""></button>
+  <button class="tbtn" id="start" title="Launchpad" aria-label="Launchpad"><img class="g" data-ic="start" alt=""></button>
+  <div id="dock-sep"></div>
+  <div id="dock-pinned"></div>
+  <div id="dock-date"><span id="dd-day"></span><span id="dd-date"></span></div>
+  <div id="dock-sep"></div>
   <div id="tasks"></div>
-  <div id="tray"><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-label="Network"><path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.2" r=".7"/></svg><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="Volume"><path d="M4 10v4h4l5 4V6L8 10z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg><div id="clk"></div><button id="sd" title="Show desktop" aria-label="Show desktop"></button></div>
 </div>
 <script>
 const $=(s,e=document)=>e.querySelector(s);
@@ -258,11 +305,12 @@ const apps=[
  {id:'chat',n:'Chat',icon:'chat',w:1120,h:720,r:chatApp},
  {id:'games',n:'Games',icon:'games',w:880,h:580,r:gamesApp},
 {id:'suggest',n:'Suggestions',icon:'suggest',w:560,h:620,r:suggestApp},
+{id:'wallpapers',n:'Wallpapers',icon:'wallpapers',w:640,h:480,r:wallpapersApp},
 ];
 const wins=[];let z=10,n=0,sel=null;
 function mk(t,tag='div',cls=''){const x=document.createElement(tag);x.className=cls;if(t!=null)x.innerHTML=t;return x}
 
-const IC={"files":["#ffb84d","#f0821e","<path d=\"M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/>"],"notes":["#5ab0ff","#2f6bdc","<path d=\"M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z\"/><path d=\"M14 3v5h5M9 13h6M9 17h4\"/>"],"web":["#38bdf8","#6366f1","<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18\"/>"],"calc":["#a78bfa","#6d3fd4","<rect x=\"5\" y=\"3\" width=\"14\" height=\"18\" rx=\"2\"/><path d=\"M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01\"/>"],"chat":["#7289da","#4752c4","<path d=\"M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-6l-5 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z\"/><path d=\"M7 10h10M7 13h7\"/>"],"games":["#f472b6","#e11d48","<path d=\"M6 11h4M8 9v4M15 12h.01M18 10h.01\"/><path d=\"M17.3 5H6.7a4 4 0 0 0-4 3.6C2.6 9.4 2 14.5 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.4-1.4a2 2 0 0 1 1.4-.6h4.4a2 2 0 0 1 1.4.6L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.5-.6-6.600-.7-7.300A4 4 0 0 0 17.3 5z\"/>"],"set":["#34d399","#0e8f6a","<path d=\"M4 7h10M18 7h2M4 17h2M10 17h10\"/><circle cx=\"16\" cy=\"7\" r=\"2\"/><circle cx=\"8\" cy=\"17\" r=\"2\"/>"],"start":["#a3e635","#3f9b1c","<path d=\"M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4\"/>"],"suggest":["#fbbf24","#d97706","<path d=\"M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.6.5 1.1 1.3 1.2 2.2h4.8c.1-.9.6-1.7 1.2-2.2A6 6 0 0 0 12 3z\"/>"]};
+const IC={"files":["#ffb84d","#f0821e","<path d=\"M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/>"],"notes":["#5ab0ff","#2f6bdc","<path d=\"M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z\"/><path d=\"M14 3v5h5M9 13h6M9 17h4\"/>"],"web":["#38bdf8","#6366f1","<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18\"/>"],"calc":["#a78bfa","#6d3fd4","<rect x=\"5\" y=\"3\" width=\"14\" height=\"18\" rx=\"2\"/><path d=\"M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01\"/>"],"chat":["#7289da","#4752c4","<path d=\"M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-6l-5 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z\"/><path d=\"M7 10h10M7 13h7\"/>"],"games":["#f472b6","#e11d48","<path d=\"M6 11h4M8 9v4M15 12h.01M18 10h.01\"/><path d=\"M17.3 5H6.7a4 4 0 0 0-4 3.6C2.6 9.4 2 14.5 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.4-1.4a2 2 0 0 1 1.4-.6h4.4a2 2 0 0 1 1.4.6L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.5-.6-6.600-.7-7.300A4 4 0 0 0 17.3 5z\"/>"],"set":["#34d399","#0e8f6a","<path d=\"M4 7h10M18 7h2M4 17h2M10 17h10\"/><circle cx=\"16\" cy=\"7\" r=\"2\"/><circle cx=\"8\" cy=\"17\" r=\"2\"/>"],"start":["#a3e635","#3f9b1c","<path d=\"M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4\"/>"],"suggest":["#fbbf24","#d97706","<path d=\"M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.6.5 1.1 1.3 1.2 2.2h4.8c.1-.9.6-1.7 1.2-2.2A6 6 0 0 0 12 3z\"/>"],"wallpapers":["#60a5fa","#2563eb","<rect x=\"3\" y=\"4\" width=\"18\" height=\"14\" rx=\"2\"/><path d=\"M3 15l5-5 4 4 3-3 6 6\"/><circle cx=\"8.5\" cy=\"8.5\" r=\"1.5\"/>"]};
 const mix=(h,k)=>'#'+[1,3,5].map(i=>Math.round(parseInt(h.substr(i,2),16)*(1-k)+255*k).toString(16).padStart(2,'0')).join('');
 function builtin(n){const[a,b,p]=IC[n],d=theme==='dark';return 'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${d?a:mix(a,.82)}"/><stop offset="1" stop-color="${d?b:mix(b,.72)}"/></linearGradient></defs><rect x=".5" y=".5" width="63" height="63" rx="14.5" fill="url(#g)"/><g transform="translate(16 16) scale(1.333)" fill="none" stroke="${d?'#fff':b}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</g></svg>`)}
 document.addEventListener('error',e=>{const i=e.target;if(!i||i.tagName!=='IMG')return;
@@ -276,6 +324,83 @@ const ICON_BASE='icons/';
 let theme='dark';try{theme=localStorage.getItem('dsmhub-theme')||'dark'}catch(e){}
 let links=[];try{links=JSON.parse(localStorage.getItem('dsmhub-links')||'[]')}catch(e){}
 const saveLinks=()=>{try{localStorage.setItem('dsmhub-links',JSON.stringify(links))}catch(e){}};
+// ---- layout: which apps are pinned to the dock / home screen, synced per account ----
+let layout={taskbar:['chat','custom-spotify'],home:['files','games','chat'],wallpaper:null};
+try{const saved=JSON.parse(localStorage.getItem('dsmhub-layout')||'null');if(saved)layout=Object.assign(layout,saved)}catch(e){}
+let layoutSaveTimer=null;
+function saveLayout(){
+ try{localStorage.setItem('dsmhub-layout',JSON.stringify(layout))}catch(e){}
+ clearTimeout(layoutSaveTimer);
+ layoutSaveTimer=setTimeout(async()=>{
+  const acc=await dsmEnsureAccount();const uid=dsmCurrentUserId();
+  if(!acc||!uid)return;
+  try{await acc.db.from('user_layouts').upsert({user_id:uid,data:layout,updated_at:new Date().toISOString()})}catch(e){console.warn('[layout] cloud save failed',e)}
+ },1200)
+}
+async function loadCloudLayout(){
+ const acc=await dsmEnsureAccount();const uid=dsmCurrentUserId();
+ if(!acc||!uid)return;
+ try{
+  const{data,error}=await acc.db.from('user_layouts').select('data').eq('user_id',uid).maybeSingle();
+  if(!error&&data&&data.data){layout=Object.assign({taskbar:[],home:[],wallpaper:null},data.data);drawIcons();renderDockPinned();applyWallpaper(layout.wallpaper)}
+ }catch(e){console.warn('[layout] cloud load failed',e)}
+}
+function togglePin(kind,id){
+ const arr=layout[kind];const i=arr.indexOf(id);
+ if(i>-1)arr.splice(i,1);else arr.push(id);
+ saveLayout();drawIcons();renderDockPinned()
+}
+function renderDockPinned(){
+ const el=$('#dock-pinned');if(!el)return;el.innerHTML='';
+ layout.taskbar.forEach(id=>{
+  const a=apps.find(x=>x.id===id);if(!a)return;
+  const open=wins.find(o=>o.a.id===id);
+  const btn=mk(glyph(a),'button','tbtn'+(open?' on':''));btn.title=a.n;
+  btn.onclick=()=>{if(open)focus(open);else openApp(id)};
+  el.append(btn)
+ })
+}
+function dockDateTick(){const d=new Date();const dd=$('#dd-day'),de=$('#dd-date');if(dd)dd.textContent=d.toLocaleDateString('en-US',{weekday:'short'});if(de)de.textContent=d.getDate()}
+setInterval(dockDateTick,60000);dockDateTick();
+
+// ---- wallpapers: your own upload (this session only) or a preset (persists) ----
+// Add your own found/made presets here: {n:'Name', type:'image'|'video', src:'https://...'}
+const WALLPAPER_PRESETS=[];
+function applyWallpaper(w){
+ const desk=$('#desk');let v=$('#desk-video');
+ if(w&&w.type==='video'){
+  if(!v){v=document.createElement('video');v.id='desk-video';v.autoplay=true;v.loop=true;v.muted=true;v.playsInline=true;v.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0';desk.prepend(v)}
+  if(v.src!==w.src)v.src=w.src;
+  desk.style.backgroundImage='none'
+ }else{
+  if(v)v.remove();
+  desk.style.backgroundImage=w&&w.type==='image'?`url("${w.src}")`:''
+ }
+}
+function wallpapersApp(b){
+ b.innerHTML='<div class="wp"><div class="wp-h">Your own</div><input type="file" accept="image/*,video/*" class="wp-file"><p class="wp-note">An uploaded wallpaper only lasts this browser session \u2014 it is not saved to your account or synced to other devices, since the file itself would be too large to store. Add it as a preset below (by URL) if you want it to stick around.</p><div class="wp-h">Presets</div><div class="wp-grid"></div><button class="btn alt wp-reset">Reset to default</button></div>';
+ const grid=$('.wp-grid',b);
+ function card(name,w,isCurrent){
+  const el=mk(`<span>${esc(name)}</span>`,'button','wp-card'+(isCurrent?' on':''));
+  el.onclick=()=>{layout.wallpaper=w;saveLayout();applyWallpaper(w);renderGrid()};
+  return el
+ }
+ function renderGrid(){
+  grid.innerHTML='';
+  const cur=layout.wallpaper;
+  WALLPAPER_PRESETS.forEach(p=>grid.append(card(p.n,{type:p.type,src:p.src},cur&&cur.src===p.src)));
+  if(!WALLPAPER_PRESETS.length)grid.append(mk('No presets added yet \u2014 edit WALLPAPER_PRESETS in the code to add the ones you made.','p','pad-dim'))
+ }
+ $('.wp-file',b).onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const url=URL.createObjectURL(f);
+  const w={type:f.type.startsWith('video')?'video':'image',src:url};
+  layout.wallpaper=w;saveLayout();applyWallpaper(w);renderGrid()
+ };
+ $('.wp-reset',b).onclick=()=>{layout.wallpaper=null;saveLayout();applyWallpaper(null);renderGrid()};
+ renderGrid()
+}
+
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const tile=l=>'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#4b5563"/><text x="32" y="43" font-size="30" text-anchor="middle" fill="#fff" font-family="sans-serif">${esc((l||'?').toUpperCase())}</text></svg>`);
 const iconSrc=name=>name==='chat'?builtin('chat'):/^(?:data:|https?:|blob:)/i.test(name)?name:ICON_BASE+theme+'/'+name+'.svg';
@@ -290,12 +415,26 @@ function drawIcons(){icons.innerHTML='';
  const add=(html,name,open)=>{const d=mk(html+`<span>${name}</span>`,'div','ic');
   d.onclick=e=>{e.stopPropagation();document.querySelectorAll('.ic.sel').forEach(i=>i.classList.remove('sel'));d.classList.add('sel')};
   d.ondblclick=open;icons.append(d)};
- apps.forEach(a=>add(glyph(a),a.n,()=>openApp(a.id)));
+ apps.filter(a=>layout.home.includes(a.id)).forEach(a=>add(glyph(a),a.n,()=>openApp(a.id)));
  links.forEach(x=>add(linkGlyph(x),esc(x.n),()=>window.open(x.u,'_blank','noopener')))}
-drawIcons();
+drawIcons();renderDockPinned();applyWallpaper(layout.wallpaper);loadCloudLayout();
 $('#desk').onclick=()=>{document.querySelectorAll('.ic.sel').forEach(i=>i.classList.remove('sel'));menu(false)};
-function drawList(f=''){const l=$('#list');l.innerHTML='';apps.filter(a=>a.n.toLowerCase().includes(f.toLowerCase())).forEach(a=>{const b=mk(glyph(a)+a.n,'button','tbtn');b.onclick=()=>{openApp(a.id);menu(false)};l.append(b)});if(!l.children.length)l.append(mk('<div class="pad" style="color:var(--dim)">No apps match that search.</div>'))}
-function menu(v){const m=$('#menu');m.classList.toggle('open',v);$('#start').classList.toggle('act',v);if(v){$('#q').value='';drawList();$('#q').focus()}}
+function drawList(f=''){const l=$('#list');l.innerHTML='';apps.filter(a=>a.n.toLowerCase().includes(f.toLowerCase())).forEach(a=>{
+  const b=mk(glyph(a)+`<span>${esc(a.n)}</span>`,'button','apptile');
+  b.onclick=()=>{openApp(a.id);menu(false)};
+  const pins=mk(`<span class="pin${layout.taskbar.includes(a.id)?' on':''}" data-k="taskbar">${layout.taskbar.includes(a.id)?'\u2212 Dock':'+ Dock'}</span><span class="pin${layout.home.includes(a.id)?' on':''}" data-k="home">${layout.home.includes(a.id)?'\u2212 Home':'+ Home'}</span>`,'div','apptile-actions');
+  pins.querySelectorAll('.pin').forEach(p=>p.onclick=ev=>{ev.stopPropagation();togglePin(p.dataset.k,a.id);drawList(f)});
+  b.append(pins);l.append(b)});
+ if(!l.children.length)l.append(mk('No apps match that search.','div','pad-dim'))}
+function menuTick(){const d=new Date();$('#md-day').textContent=d.toLocaleDateString('en-US',{weekday:'long'});$('#md-date').textContent=d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});$('#md-time').textContent=d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})}
+setInterval(menuTick,1000);menuTick();
+async function drawAcct(){const el=$('#menu-acct');const uid=dsmCurrentUserId();
+ if(uid){const name=(window.Clerk&&window.Clerk.user&&(window.Clerk.user.username||window.Clerk.user.firstName))||'Signed in';
+  el.innerHTML=`<div class="acct-row"><span class="acct-av">${esc(name[0]||'?')}</span><span>${esc(name)}</span></div><button class="tbtn" id="lockbtn">Lock screen</button>`}
+ else{el.innerHTML='<button class="tbtn" id="acct-signin">Sign in</button><button class="tbtn" id="lockbtn">Lock screen</button>'}
+ const sb=$('#lockbtn',el);if(sb)sb.onclick=relock;
+ const si=$('#acct-signin',el);if(si)si.onclick=()=>{menu(false);openApp('chat')}}
+function menu(v){const m=$('#menu');m.classList.toggle('open',v);$('#start').classList.toggle('act',v);if(v){$('#q').value='';drawList();drawAcct();$('#q').focus()}}
 $('#start').onclick=e=>{e.stopPropagation();menu(!$('#menu').classList.contains('open'))};
 $('#q').oninput=e=>drawList(e.target.value);
 $('#q').onkeydown=e=>{if(e.key==='Enter'){const b=$('#list .tbtn');if(b)b.click()}if(e.key==='Escape')menu(false)};
@@ -305,8 +444,8 @@ function openApp(id,custom){const a=custom||apps.find(x=>x.id===id);
  const w=mk(null,'div','win');w.style.cssText=`width:${a.w}px;height:${a.h}px;left:${90+(n%8)*28}px;top:${50+(n%8)*28}px;z-index:${++z}`;n++;
  const tb=mk(`${glyph(a,1)}<span>${a.n}</span>${a.fs?'<button class="fs" title="Fullscreen" aria-label="Fullscreen"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>':''}<button class="m" title="Minimize">–</button><button class="mx" title="Maximize">▢</button><button class="x" title="Close">✕</button>`,'div','tb');
  const body=mk(null,'div','body');w.append(tb,body,mk(null,'div','rs'));$('#desk').append(w);
- const btn=mk(glyph(a)+`<em>${a.n}</em>`,'button','tbtn on');$('#tasks').append(btn);
- const o={w,btn,a};wins.push(o);a.r(body,o);focus(o);
+ const btn=mk(glyph(a),'button','tbtn on');btn.title=a.n;$('#tasks').append(btn);
+ const o={w,btn,a};wins.push(o);a.r(body,o);focus(o);renderDockPinned();
  const clamp=()=>{const r=$('#desk').getBoundingClientRect();w.style.left=Math.min(Math.max(parseFloat(w.style.left),-w.offsetWidth+80),r.width-60)+'px';w.style.top=Math.min(Math.max(parseFloat(w.style.top),0),r.height-36)+'px'};
  tb.onpointerdown=e=>{if(e.target.closest('button')||w.classList.contains('max'))return;focus(o);const sx=e.clientX-w.offsetLeft,sy=e.clientY-w.offsetTop;tb.setPointerCapture(e.pointerId);tb.style.cursor='grabbing';
   tb.onpointermove=ev=>{w.style.left=(ev.clientX-sx)+'px';w.style.top=(ev.clientY-sy)+'px'};
@@ -316,7 +455,7 @@ function openApp(id,custom){const a=custom||apps.find(x=>x.id===id);
  w.onpointerdown=()=>focus(o);
  $('.m',w).onclick=()=>minim(o,true);
  const fb=$('.fs',w);if(fb)fb.onclick=()=>{const cf=document.fullscreenElement||document.webkitFullscreenElement,rq=w.requestFullscreen||w.webkitRequestFullscreen;if(cf===w)(document.exitFullscreen||document.webkitExitFullscreen).call(document);else if(rq)rq.call(w);else w.classList.toggle('max')};$('.mx',w).onclick=()=>w.classList.toggle('max');tb.ondblclick=e=>{if(!e.target.closest('button'))w.classList.toggle('max')};
- $('.x',w).onclick=()=>{if(o.onclose)try{o.onclose()}catch(e){}w.remove();btn.remove();wins.splice(wins.indexOf(o),1)};
+ $('.x',w).onclick=()=>{if(o.onclose)try{o.onclose()}catch(e){}w.remove();btn.remove();wins.splice(wins.indexOf(o),1);renderDockPinned()};
  btn.onclick=()=>{if(w.classList.contains('min')||sel!==o)focus(o);else minim(o,true)}}
 function focus(o){o.w.classList.remove('min');o.w.style.zIndex=++z;sel=o;wins.forEach(x=>x.btn.classList.toggle('act',x===o))}
 function minim(o,v){o.w.classList.toggle('min',v);o.btn.classList.remove('act');if(sel===o)sel=null}
@@ -770,7 +909,6 @@ function unlock(){lock.classList.add('gone')}
 function relock(){menu(false);wins.filter(o=>o.a.id==='games').forEach(o=>$('.x',o.w).click());lock.classList.remove('gone')}
 lock.onclick=unlock;
 document.addEventListener('keydown',e=>{if(!lock.classList.contains('gone')){e.preventDefault();unlock()}});
-$('#lockbtn').onclick=relock;
 openApp('notes');
 </script>
 </body>
