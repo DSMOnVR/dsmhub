@@ -272,7 +272,40 @@ img.g,.tbtn img.g{border-radius:23%;display:block;object-fit:contain;box-shadow:
 @media(max-width:930px){.dch{grid-template-columns:210px minmax(0,1fr)}.dch-members{display:none}}
 @media(max-width:620px){.dch{grid-template-columns:minmax(0,1fr)}.dch-channels{display:none}.dch-messages{padding:12px 9px}.dch-composer-wrap{padding:7px 9px 10px}.dch-top{padding:0 9px}.dch-topic{display:none}}
 
-.sg{height:100%;display:flex;flex-direction:column;padding:12px;gap:10px;overflow:auto}.sg-form{display:flex;flex-direction:column;gap:6px;background:var(--panel2);border-radius:10px;padding:10px}.sg-title,.sg-body{width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;outline:none;resize:vertical}.sg-title:focus,.sg-body:focus{border-color:var(--accent)}.sg-post{align-self:flex-end}.sg-msg{color:#f87171;min-height:1.2em;margin:0}.sg-list{display:flex;flex-direction:column;gap:8px}.sg-card{background:var(--panel2);border-radius:10px;padding:10px}.sg-card-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.sg-by{color:var(--dim);font-size:11px;white-space:nowrap}.sg-card p{margin:4px 0 8px;white-space:pre-wrap}.sg-card-f{display:flex;gap:8px;align-items:center}.sg-vote{border:1px solid var(--line);background:none;color:var(--text);border-radius:999px;padding:4px 10px;cursor:pointer;font:inherit}.sg-vote.on{background:#87cf3e30;border-color:var(--accent);color:var(--accent)}.sg-del{border:0;background:none;color:#f87171;cursor:pointer;font:inherit}</style>
+.sg{height:100%;display:flex;flex-direction:column;padding:12px;gap:10px;overflow:auto}.sg-form{display:flex;flex-direction:column;gap:6px;background:var(--panel2);border-radius:10px;padding:10px}.sg-title,.sg-body{width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;outline:none;resize:vertical}.sg-title:focus,.sg-body:focus{border-color:var(--accent)}.sg-post{align-self:flex-end}.sg-msg{color:#f87171;min-height:1.2em;margin:0}.sg-list{display:flex;flex-direction:column;gap:8px}.sg-card{background:var(--panel2);border-radius:10px;padding:10px}.sg-card-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.sg-by{color:var(--dim);font-size:11px;white-space:nowrap}.sg-card p{margin:4px 0 8px;white-space:pre-wrap}.sg-card-f{display:flex;gap:8px;align-items:center}.sg-vote{border:1px solid var(--line);background:none;color:var(--text);border-radius:999px;padding:4px 10px;cursor:pointer;font:inherit}.sg-vote.on{background:#87cf3e30;border-color:var(--accent);color:var(--accent)}.sg-del{border:0;background:none;color:#f87171;cursor:pointer;font:inherit}
+.dm{height:100%;display:flex}
+.dm-side{width:220px;flex:none;border-right:1px solid var(--line);padding:10px;display:flex;flex-direction:column;gap:6px;overflow:auto}
+.dm-search{padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;outline:none}
+.dm-search:focus{border-color:var(--accent)}
+.dm-h{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-top:6px}
+.dm-row{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:4px 2px;font-size:12px}
+.dm-friend{display:flex;align-items:center;gap:8px;border:0;background:none;color:var(--text);padding:6px;border-radius:8px;cursor:pointer;font:inherit;text-align:left}
+.dm-friend:hover,.dm-friend.on{background:var(--panel2)}
+.dm-av{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#10150a;display:grid;place-items:center;font:600 11px Poppins,sans-serif;flex:none}
+.dm-main{flex:1;display:flex;flex-direction:column;min-width:0}
+.dm-empty{margin:auto;color:var(--dim)}
+.dm-thread{height:100%;display:flex;flex-direction:column}
+.dm-thread-h{padding:10px 14px;border-bottom:1px solid var(--line);font-weight:600}
+.dm-msgs{flex:1;overflow:auto;padding:10px 14px;display:flex;flex-direction:column;gap:6px}
+.dm-msg{max-width:70%;padding:7px 11px;border-radius:12px;background:var(--panel2);align-self:flex-start;font-size:13px}
+.dm-msg.me{align-self:flex-end;background:var(--accent);color:#10150a}
+.dm-send{display:flex;gap:8px;padding:10px 14px;border-top:1px solid var(--line)}
+.dm-input{flex:1;padding:8px 11px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;outline:none}
+.dm-input:focus{border-color:var(--accent)}
+.st{height:100%;display:flex;flex-direction:column;padding:12px;gap:10px}
+.st-strip{display:flex;gap:10px;overflow-x:auto;flex:none;padding-bottom:4px}
+.st-item{display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:none;color:var(--text);font:inherit;cursor:pointer;flex:none;width:64px}
+.st-ring{width:56px;height:56px;border-radius:50%;padding:2px;background:linear-gradient(135deg,var(--accent),#fb7185);display:block}
+.st-ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;border:2px solid var(--panel)}
+.st-item span:last-child{font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.st-view{flex:1;min-height:0;border-radius:10px;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.st-view img{max-width:100%;max-height:100%;cursor:pointer}
+.st-add{flex:none}
+.st-cam{width:100%;height:100%;display:flex;flex-direction:column;gap:8px;padding:10px;align-items:center}
+.st-cam video,.st-prev canvas,.st-prev img{max-width:100%;max-height:60%;border-radius:8px}
+.st-text{width:80%;padding:8px 11px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--text);font:inherit;outline:none;text-align:center}
+.st-cam-actions{display:flex;gap:8px}
+</style>
 </head>
 <body>
 <div id="lock" role="button" tabindex="0" aria-label="Unlock"><div id="lt">00:00 AM</div><div id="ld"></div><div id="lc">Made By DSM</div><div id="lh">Click or press any key</div></div>
@@ -311,11 +344,13 @@ const apps=[
  {id:'games',n:'Games',icon:'games',w:880,h:580,r:gamesApp},
 {id:'suggest',n:'Suggestions',icon:'suggest',w:560,h:620,r:suggestApp},
 {id:'wallpapers',n:'Wallpapers',icon:'wallpapers',w:640,h:480,r:wallpapersApp},
+{id:'dms',n:'DMs',icon:'dms',w:820,h:560,r:dmsApp},
+{id:'stories',n:'Stories',icon:'stories',w:420,h:680,r:storiesApp},
 ];
 const wins=[];let z=10,n=0,sel=null;
 function mk(t,tag='div',cls=''){const x=document.createElement(tag);x.className=cls;if(t!=null)x.innerHTML=t;return x}
 
-const IC={"files":["#ffb84d","#f0821e","<path d=\"M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/>"],"notes":["#5ab0ff","#2f6bdc","<path d=\"M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z\"/><path d=\"M14 3v5h5M9 13h6M9 17h4\"/>"],"web":["#38bdf8","#6366f1","<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18\"/>"],"calc":["#a78bfa","#6d3fd4","<rect x=\"5\" y=\"3\" width=\"14\" height=\"18\" rx=\"2\"/><path d=\"M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01\"/>"],"chat":["#7289da","#4752c4","<path d=\"M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-6l-5 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z\"/><path d=\"M7 10h10M7 13h7\"/>"],"games":["#f472b6","#e11d48","<path d=\"M6 11h4M8 9v4M15 12h.01M18 10h.01\"/><path d=\"M17.3 5H6.7a4 4 0 0 0-4 3.6C2.6 9.4 2 14.5 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.4-1.4a2 2 0 0 1 1.4-.6h4.4a2 2 0 0 1 1.4.6L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.5-.6-6.600-.7-7.300A4 4 0 0 0 17.3 5z\"/>"],"set":["#34d399","#0e8f6a","<path d=\"M4 7h10M18 7h2M4 17h2M10 17h10\"/><circle cx=\"16\" cy=\"7\" r=\"2\"/><circle cx=\"8\" cy=\"17\" r=\"2\"/>"],"start":["#a3e635","#3f9b1c","<path d=\"M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4\"/>"],"suggest":["#fbbf24","#d97706","<path d=\"M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.6.5 1.1 1.3 1.2 2.2h4.8c.1-.9.6-1.7 1.2-2.2A6 6 0 0 0 12 3z\"/>"],"wallpapers":["#60a5fa","#2563eb","<rect x=\"3\" y=\"4\" width=\"18\" height=\"14\" rx=\"2\"/><path d=\"M3 15l5-5 4 4 3-3 6 6\"/><circle cx=\"8.5\" cy=\"8.5\" r=\"1.5\"/>"]};
+const IC={"files":["#ffb84d","#f0821e","<path d=\"M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/>"],"notes":["#5ab0ff","#2f6bdc","<path d=\"M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z\"/><path d=\"M14 3v5h5M9 13h6M9 17h4\"/>"],"web":["#38bdf8","#6366f1","<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18\"/>"],"calc":["#a78bfa","#6d3fd4","<rect x=\"5\" y=\"3\" width=\"14\" height=\"18\" rx=\"2\"/><path d=\"M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01\"/>"],"chat":["#7289da","#4752c4","<path d=\"M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-6l-5 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z\"/><path d=\"M7 10h10M7 13h7\"/>"],"games":["#f472b6","#e11d48","<path d=\"M6 11h4M8 9v4M15 12h.01M18 10h.01\"/><path d=\"M17.3 5H6.7a4 4 0 0 0-4 3.6C2.6 9.4 2 14.5 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.4-1.4a2 2 0 0 1 1.4-.6h4.4a2 2 0 0 1 1.4.6L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.5-.6-6.600-.7-7.300A4 4 0 0 0 17.3 5z\"/>"],"set":["#34d399","#0e8f6a","<path d=\"M4 7h10M18 7h2M4 17h2M10 17h10\"/><circle cx=\"16\" cy=\"7\" r=\"2\"/><circle cx=\"8\" cy=\"17\" r=\"2\"/>"],"start":["#a3e635","#3f9b1c","<path d=\"M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4\"/>"],"suggest":["#fbbf24","#d97706","<path d=\"M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.6.5 1.1 1.3 1.2 2.2h4.8c.1-.9.6-1.7 1.2-2.2A6 6 0 0 0 12 3z\"/>"],"wallpapers":["#60a5fa","#2563eb","<rect x=\"3\" y=\"4\" width=\"18\" height=\"14\" rx=\"2\"/><path d=\"M3 15l5-5 4 4 3-3 6 6\"/><circle cx=\"8.5\" cy=\"8.5\" r=\"1.5\"/>"],"dms":["#60a5fa","#2563eb","<path d=\"M4 5h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-4 3v-3H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z\"/><path d=\"M22 10v6a2 2 0 0 1-2 2h-1v3l-3-3\"/>"],"stories":["#fb7185","#be123c","<circle cx=\"12\" cy=\"13\" r=\"6\"/><path d=\"M9 13a3 3 0 0 1 3-3\"/><path d=\"M9 4h2l1.5 2h2.5a2 2 0 0 1 2 2v1\"/>"]};
 const mix=(h,k)=>'#'+[1,3,5].map(i=>Math.round(parseInt(h.substr(i,2),16)*(1-k)+255*k).toString(16).padStart(2,'0')).join('');
 function builtin(n){const[a,b,p]=IC[n],d=theme==='dark';return 'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${d?a:mix(a,.82)}"/><stop offset="1" stop-color="${d?b:mix(b,.72)}"/></linearGradient></defs><rect x=".5" y=".5" width="63" height="63" rx="14.5" fill="url(#g)"/><g transform="translate(16 16) scale(1.333)" fill="none" stroke="${d?'#fff':b}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</g></svg>`)}
 document.addEventListener('error',e=>{const i=e.target;if(!i||i.tagName!=='IMG')return;
@@ -411,6 +446,127 @@ function wallpapersApp(b){
  $('.wp-reset',b).onclick=()=>{layout.wallpaper=null;saveLayout();applyWallpaper(null);status.textContent='Wallpaper reset.';renderGrid()};
  renderGrid()
 }
+// ---- DMs + friends (reuses dsmhub_profiles for usernames) ----
+function dmsApp(b){
+ b.innerHTML='<div class="dm"><div class="dm-side"><input class="dm-search" placeholder="Search by username"><div class="dm-results"></div><div class="dm-h">Requests</div><div class="dm-requests"></div><div class="dm-h">Friends</div><div class="dm-friends"></div></div><div class="dm-main"><div class="dm-empty">Pick a friend to message.</div></div></div>';
+ const search=$('.dm-search',b),results=$('.dm-results',b),reqEl=$('.dm-requests',b),friendsEl=$('.dm-friends',b),main=$('.dm-main',b);
+ let acc=null,uid=null,myName='you',friends=[],incoming=[],outgoing=[],active=null,pollTimer=null;
+ async function refreshFriends(){
+  const rows=(await acc.db.from('friends').select('id,requester_id,addressee_id,status').or(`requester_id.eq.${uid},addressee_id.eq.${uid}`)).data||[];
+  friends=rows.filter(r=>r.status==='accepted').map(r=>r.requester_id===uid?r.addressee_id:r.requester_id);
+  incoming=rows.filter(r=>r.status==='pending'&&r.addressee_id===uid);
+  outgoing=rows.filter(r=>r.status==='pending'&&r.requester_id===uid);
+  const ids=[...new Set([...friends,...incoming.map(r=>r.requester_id),...outgoing.map(r=>r.addressee_id)])];
+  let names={};
+  if(ids.length){const p=(await acc.db.from('dsmhub_profiles').select('user_id,username').in('user_id',ids)).data||[];p.forEach(x=>names[x.user_id]=x.username)}
+  reqEl.innerHTML='';
+  incoming.forEach(r=>{const row=mk(`<span>${esc(names[r.requester_id]||r.requester_id)}</span>`,'div','dm-row');
+   const ok=mk('Accept','button','btn');ok.onclick=async()=>{await acc.db.from('friends').update({status:'accepted'}).eq('id',r.id);refreshFriends()};
+   const no=mk('Decline','button','btn alt');no.onclick=async()=>{await acc.db.from('friends').delete().eq('id',r.id);refreshFriends()};
+   row.append(ok,no);reqEl.append(row)});
+  outgoing.forEach(r=>{const row=mk(`<span>${esc(names[r.addressee_id]||r.addressee_id)} (pending)</span>`,'div','dm-row');
+   const cancel=mk('Cancel','button','btn alt');cancel.onclick=async()=>{await acc.db.from('friends').delete().eq('id',r.id);refreshFriends()};
+   row.append(cancel);reqEl.append(row)});
+  if(!incoming.length&&!outgoing.length)reqEl.append(mk('Nothing pending.','p','pad-dim'));
+  friendsEl.innerHTML='';
+  if(!friends.length)friendsEl.append(mk('No friends yet \u2014 search above to add some.','p','pad-dim'));
+  friends.forEach(fid=>{const row=mk(`<span class="g dm-av">${esc((names[fid]||'?')[0].toUpperCase())}</span><span>${esc(names[fid]||fid)}</span>`,'button','dm-friend'+(active===fid?' on':''));
+   row.onclick=()=>openThread(fid,names[fid]||fid);friendsEl.append(row)})
+ }
+ let searchTimer=null;
+ search.oninput=()=>{clearTimeout(searchTimer);const q=search.value.trim();results.innerHTML='';if(!q)return;
+  searchTimer=setTimeout(async()=>{
+   const rows=(await acc.db.from('dsmhub_profiles').select('user_id,username').ilike('username','%'+q+'%').limit(8)).data||[];
+   results.innerHTML='';
+   rows.filter(r=>r.user_id!==uid).forEach(r=>{
+    const known=friends.includes(r.user_id)||outgoing.some(o=>o.addressee_id===r.user_id)||incoming.some(i=>i.requester_id===r.user_id);
+    const row=mk(`<span>${esc(r.username)}</span>`,'div','dm-row');
+    const add=mk(known?'Pending/Friend':'Add','button','btn'+(known?' alt':''));add.disabled=known;
+    add.onclick=async()=>{await acc.db.from('friends').insert({requester_id:uid,addressee_id:r.user_id});search.value='';results.innerHTML='';refreshFriends()};
+    row.append(add);results.append(row)})
+  },250)
+ };
+ function openThread(fid,name){
+  active=fid;refreshFriends();
+  main.innerHTML=`<div class="dm-thread"><div class="dm-thread-h">${esc(name)}</div><div class="dm-msgs"></div><div class="dm-send"><input class="dm-input" placeholder="Message ${esc(name)}"><button class="btn dm-go">Send</button></div></div>`;
+  const msgsEl=$('.dm-msgs',main),input=$('.dm-input',main);
+  async function loadMsgs(){
+   const rows=(await acc.db.from('dm_messages').select('sender_id,body,created_at').or(`and(sender_id.eq.${uid},recipient_id.eq.${fid}),and(sender_id.eq.${fid},recipient_id.eq.${uid})`).order('created_at',{ascending:true}).limit(200)).data||[];
+   msgsEl.innerHTML='';rows.forEach(m=>{const el=mk(esc(m.body),'div','dm-msg'+(m.sender_id===uid?' me':''));msgsEl.append(el)});
+   msgsEl.scrollTop=msgsEl.scrollHeight
+  }
+  async function send(){const v=input.value.trim();if(!v)return;input.value='';await acc.db.from('dm_messages').insert({sender_id:uid,recipient_id:fid,body:v});loadMsgs()}
+  $('.dm-go',main).onclick=send;input.onkeydown=e=>{if(e.key==='Enter')send()};
+  loadMsgs();
+  clearInterval(pollTimer);pollTimer=setInterval(loadMsgs,4000)
+ }
+ (async()=>{
+  acc=await dsmEnsureAccount();uid=dsmCurrentUserId();
+  if(!acc||!uid){b.innerHTML='<div class="pad-dim">Sign in through Chat to use DMs.</div>';return}
+  myName=(window.Clerk&&window.Clerk.user&&window.Clerk.user.username)||'you';
+  await refreshFriends()
+ })()
+}
+
+// ---- stories: friends-only, 24h, camera capture with a text overlay ----
+function storiesApp(b){
+ b.innerHTML='<div class="st"><div class="st-strip"></div><div class="st-view"></div><button class="btn st-add">+ Add to your story</button></div>';
+ const strip=$('.st-strip',b),view=$('.st-view',b);
+ let acc=null,uid=null,myName='you',stream=null;
+ async function urlFor(path){const r=await acc.db.storage.from('dsmhub-chat-attachments').createSignedUrl(path,21600);return r.error?null:r.data.signedUrl}
+ async function refresh(){
+  strip.innerHTML='Loading\u2026';
+  const rows=(await acc.db.from('stories').select('id,user_id,username,path,created_at').order('created_at',{ascending:false})).data||[];
+  const latest={};rows.forEach(r=>{if(!latest[r.user_id])latest[r.user_id]=r});
+  strip.innerHTML='';
+  const list=Object.values(latest);
+  if(!list.length){strip.append(mk('No stories right now. Be the first.','p','pad-dim'));view.innerHTML='';return}
+  list.forEach(async r=>{
+   const url=await urlFor(r.path);if(!url)return;
+   const ring=mk(`<span class="st-ring"><img src="${url}" alt=""></span><span>${esc(r.user_id===uid?'You':r.username)}</span>`,'button','st-item');
+   ring.onclick=()=>{view.innerHTML=`<img src="${url}" alt="">`;view.onclick=()=>view.innerHTML=''};
+   strip.append(ring)
+  })
+ }
+ async function startCapture(){
+  view.innerHTML='<div class="st-cam"><video autoplay playsinline muted></video><input class="st-text" placeholder="Add text\u2026" maxlength="60"><div class="st-cam-actions"><button class="btn st-shot">Capture</button><button class="btn alt st-cancel">Cancel</button></div></div>';
+  const video=$('video',view);
+  try{stream=await navigator.mediaDevices.getUserMedia({video:true});video.srcObject=stream}
+  catch(e){view.innerHTML='<p class="pad-dim">Could not access your camera. Check your browser\u2019s camera permission for this site.</p>';return}
+  $('.st-cancel',view).onclick=stopCapture;
+  $('.st-shot',view).onclick=()=>{
+   const c=document.createElement('canvas');c.width=video.videoWidth||720;c.height=video.videoHeight||1280;
+   const ctx=c.getContext('2d');ctx.drawImage(video,0,0,c.width,c.height);
+   const text=$('.st-text',view).value.trim();
+   if(text){ctx.font=`bold ${Math.round(c.width/14)}px Poppins,sans-serif`;ctx.textAlign='center';ctx.lineWidth=Math.round(c.width/160);ctx.strokeStyle='#000';ctx.fillStyle='#fff';
+    const x=c.width/2,y=c.height-c.height*0.08;ctx.strokeText(text,x,y);ctx.fillText(text,x,y)}
+   stopStream();
+   view.innerHTML='<div class="st-cam"><div class="st-prev"></div><div class="st-cam-actions"><button class="btn st-post">Post to your story</button><button class="btn alt st-retake">Retake</button></div></div>';
+   $('.st-prev',view).append(c);
+   $('.st-retake',view).onclick=startCapture;
+   $('.st-post',view).onclick=()=>postStory(c)
+  }
+ }
+ function stopStream(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}}
+ function stopCapture(){stopStream();view.innerHTML=''}
+ async function postStory(canvas){
+  const blob=await new Promise(res=>canvas.toBlob(res,'image/jpeg',0.85));
+  const path=`stories/${uid}/${Date.now()}.jpg`;
+  const up=await acc.db.storage.from('dsmhub-chat-attachments').upload(path,blob,{contentType:'image/jpeg'});
+  if(up.error){view.innerHTML='<p class="pad-dim">Could not post your story.</p>';return}
+  await acc.db.from('stories').insert({user_id:uid,username:myName,path});
+  view.innerHTML='';await refresh()
+ }
+ $('.st-add',b).onclick=startCapture;
+ (async()=>{
+  acc=await dsmEnsureAccount();uid=dsmCurrentUserId();
+  if(!acc||!uid){b.innerHTML='<div class="pad-dim">Sign in through Chat to see and post stories.</div>';return}
+  myName=(window.Clerk&&window.Clerk.user&&window.Clerk.user.username)||'you';
+  await refresh()
+ })()
+}
+
+
 
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const tile=l=>'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#4b5563"/><text x="32" y="43" font-size="30" text-anchor="middle" fill="#fff" font-family="sans-serif">${esc((l||'?').toUpperCase())}</text></svg>`);
