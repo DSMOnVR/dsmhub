@@ -60,7 +60,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .wp-h{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-top:8px}
 .wp-note{color:var(--dim);font-size:11.5px;margin:0}
 .wp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
-.wp-card{aspect-ratio:16/10;border-radius:10px;border:2px solid var(--line);background:var(--panel2);color:var(--text);cursor:pointer;display:flex;align-items:flex-end;padding:6px;font-size:11px}
+.wp-card{aspect-ratio:16/10;border-radius:10px;border:2px solid var(--line);background:var(--panel2);background-size:cover;background-position:center;color:var(--text);cursor:pointer;display:flex;align-items:flex-end;padding:6px;font-size:11px;position:relative;overflow:hidden;text-align:left}
+.wp-card span{position:relative;z-index:1;background:#0009;color:#fff;border-radius:5px;padding:3px 5px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wp-card::before{content:"";position:absolute;inset:0;background:linear-gradient(transparent 35%,#0008)}
+.wp-add{display:grid;grid-template-columns:1fr 1.5fr auto;gap:6px}
+.wp-add input{min-width:0;width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--text);font:inherit;font-size:12px}
+.wp-status{font-size:11px;color:var(--dim);min-height:14px;margin:0}
 .wp-card.on{border-color:var(--accent)}
 .wp-reset{align-self:flex-start;margin-top:6px}
 .apptile span{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
@@ -363,41 +368,47 @@ function renderDockPinned(){
 function dockDateTick(){const d=new Date();const dd=$('#dd-day'),de=$('#dd-date');if(dd)dd.textContent=d.toLocaleDateString('en-US',{weekday:'short'});if(de)de.textContent=d.getDate()}
 setInterval(dockDateTick,60000);dockDateTick();
 
-// ---- wallpapers: your own upload (this session only) or a preset (persists) ----
-// Add your own found/made presets here: {n:'Name', type:'image'|'video', src:'https://...'}
-const WALLPAPER_PRESETS=[{n:'Minecraft Cherry Blossom', type:'video', src:'https://www.youtube-nocookie.com/embed/0EWcxtOAJE4?playlist=0EWcxtOAJE4&autoplay=1&iv_load_policy=3&loop=1&start='},{n:'Snorlax', type:'video', src:'https://www.youtube-nocookie.com/embed/ErCHK6hf_tk?playlist=ErCHK6hf_tk&autoplay=1&iv_load_policy=3&loop=1&start='}];
+// ---- wallpapers: online presets, custom URLs, and local uploads ----
+// Direct image/video URLs work here. YouTube links are displayed as muted background embeds.
+const WALLPAPER_PRESETS=[
+ {n:'Minecraft Cherry Blossom',type:'video',src:'https://www.youtube.com/watch?v=0EWcxtOAJE4'},
+ {n:'Snorlax',type:'video',src:'https://www.youtube.com/watch?v=ErCHK6hf_tk'},
+ {n:'Cherry Blossom',type:'image',src:'https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1600&q=85'},
+ {n:'Mountain Lake',type:'image',src:'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1600&q=85'},
+ {n:'Ocean Sunset',type:'image',src:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=85'}
+];
+const WALLPAPER_CUSTOM_KEY='dsmhub-custom-wallpapers-v1';
+function readCustomWallpapers(){try{const x=JSON.parse(localStorage.getItem(WALLPAPER_CUSTOM_KEY)||'[]');return Array.isArray(x)?x.filter(w=>w&&w.n&&w.src&&['image','video'].includes(w.type)):[]}catch(e){return[]}}
+function youtubeEmbed(src){try{const u=new URL(src);let id='';if(u.hostname.includes('youtu.be'))id=u.pathname.slice(1);else if(u.hostname.includes('youtube.com')){if(u.pathname==='/watch')id=u.searchParams.get('v')||'';else if(u.pathname.startsWith('/embed/'))id=u.pathname.split('/')[2]||'';else if(u.pathname.startsWith('/shorts/'))id=u.pathname.split('/')[2]||''}if(!id)return null;return 'https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'?autoplay=1&mute=1&controls=0&loop=1&playlist='+encodeURIComponent(id)+'&playsinline=1&rel=0'}catch(e){return null}}
+function wallpaperTypeFromUrl(src){if(youtubeEmbed(src))return 'video';return /\.(mp4|webm|ogv|mov)(\?|#|$)/i.test(src)?'video':'image'}
 function applyWallpaper(w){
- const desk=$('#desk');let v=$('#desk-video');
- if(w&&w.type==='video'){
-  if(!v){v=document.createElement('video');v.id='desk-video';v.autoplay=true;v.loop=true;v.muted=true;v.playsInline=true;v.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0';desk.prepend(v)}
-  if(v.src!==w.src)v.src=w.src;
-  desk.style.backgroundImage='none'
- }else{
-  if(v)v.remove();
-  desk.style.backgroundImage=w&&w.type==='image'?`url("${w.src}")`:''
- }
+ const desk=$('#desk');if(!desk)return;
+ let layer=$('#desk-wallpaper-layer');if(layer)layer.remove();
+ desk.style.backgroundImage='';desk.style.backgroundSize='cover';desk.style.backgroundPosition='center';
+ if(!w||!w.src){desk.style.backgroundImage='';return}
+ if(w.type==='video'){
+  const yt=youtubeEmbed(w.src);
+  if(yt){layer=document.createElement('iframe');layer.src=yt;layer.title='Wallpaper video';layer.allow='autoplay; encrypted-media; picture-in-picture';layer.referrerPolicy='strict-origin-when-cross-origin';layer.setAttribute('aria-hidden','true');layer.style.cssText='position:absolute;left:50%;top:50%;width:100vw;height:56.25vw;min-width:177.78vh;min-height:100vh;transform:translate(-50%,-50%);border:0;pointer-events:none;z-index:0';}
+  else{layer=document.createElement('video');layer.src=w.src;layer.autoplay=true;layer.loop=true;layer.muted=true;layer.playsInline=true;layer.setAttribute('aria-hidden','true');layer.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none';layer.addEventListener('error',()=>{layer.style.display='none'});}
+  layer.id='desk-wallpaper-layer';desk.prepend(layer);if(layer.tagName==='VIDEO')layer.play().catch(()=>{});
+ }else{desk.style.backgroundImage=`url("${String(w.src).replace(/["\\]/g,'\\$&')}")`;}
 }
 function wallpapersApp(b){
- b.innerHTML='<div class="wp"><div class="wp-h">Your own</div><input type="file" accept="image/*,video/*" class="wp-file"><p class="wp-note">An uploaded wallpaper only lasts this browser session \u2014 it is not saved to your account or synced to other devices, since the file itself would be too large to store. Add it as a preset below (by URL) if you want it to stick around.</p><div class="wp-h">Presets</div><div class="wp-grid"></div><button class="btn alt wp-reset">Reset to default</button></div>';
- const grid=$('.wp-grid',b);
- function card(name,w,isCurrent){
-  const el=mk(`<span>${esc(name)}</span>`,'button','wp-card'+(isCurrent?' on':''));
-  el.onclick=()=>{layout.wallpaper=w;saveLayout();applyWallpaper(w);renderGrid()};
+ b.innerHTML='<div class="wp"><div class="wp-h">Upload your own</div><input type="file" accept="image/*,video/*" class="wp-file"><p class="wp-note">Uploads work on this browser session only. To keep a wallpaper available after refresh or for other visitors, add an image/video URL below.</p><div class="wp-h">Add online wallpaper</div><form class="wp-add"><input class="wp-name" placeholder="Wallpaper name" aria-label="Wallpaper name"><input class="wp-url" type="url" placeholder="Image, MP4, or YouTube URL" aria-label="Wallpaper URL" required><button class="btn" type="submit">Add</button></form><p class="wp-status" role="status"></p><div class="wp-h">Wallpapers</div><div class="wp-grid"></div><button class="btn alt wp-reset">Reset to default</button></div>';
+ const grid=$('.wp-grid',b),status=$('.wp-status',b);
+ function allPresets(){return [...WALLPAPER_PRESETS,...readCustomWallpapers()]}
+ function card(w,isCurrent){
+  const el=mk(`<span>${esc(w.n)}</span>`,'button','wp-card'+(isCurrent?' on':''));
+  if(w.type==='image')el.style.backgroundImage=`url("${String(w.src).replace(/["\\]/g,'\\$&')}")`;
+  else {const yt=youtubeEmbed(w.src);if(yt){el.style.backgroundImage='linear-gradient(135deg,#29233b,#111827)';}else el.style.backgroundImage='linear-gradient(135deg,#1f2937,#374151)';}
+  el.title=w.n+(w.type==='video'?' (video)':' (image)');
+  el.onclick=()=>{layout.wallpaper={type:w.type,src:w.src};saveLayout();applyWallpaper(layout.wallpaper);renderGrid()};
   return el
  }
- function renderGrid(){
-  grid.innerHTML='';
-  const cur=layout.wallpaper;
-  WALLPAPER_PRESETS.forEach(p=>grid.append(card(p.n,{type:p.type,src:p.src},cur&&cur.src===p.src)));
-  if(!WALLPAPER_PRESETS.length)grid.append(mk('No presets added yet \u2014 edit WALLPAPER_PRESETS in the code to add the ones you made.','p','pad-dim'))
- }
- $('.wp-file',b).onchange=e=>{
-  const f=e.target.files[0];if(!f)return;
-  const url=URL.createObjectURL(f);
-  const w={type:f.type.startsWith('video')?'video':'image',src:url};
-  layout.wallpaper=w;saveLayout();applyWallpaper(w);renderGrid()
- };
- $('.wp-reset',b).onclick=()=>{layout.wallpaper=null;saveLayout();applyWallpaper(null);renderGrid()};
+ function renderGrid(){grid.innerHTML='';const cur=layout.wallpaper;allPresets().forEach(p=>grid.append(card(p,cur&&cur.src===p.src)));if(!allPresets().length)grid.append(mk('No wallpapers available yet.','p','pad-dim'))}
+ $('.wp-file',b).onchange=e=>{const f=e.target.files&&e.target.files[0];if(!f)return;if(!f.type.startsWith('image/')&&!f.type.startsWith('video/')){status.textContent='Choose an image or video file.';return}const url=URL.createObjectURL(f);const w={n:f.name.replace(/\.[^.]+$/,''),type:f.type.startsWith('video/')?'video':'image',src:url};layout.wallpaper=w;saveLayout();applyWallpaper(w);status.textContent='Wallpaper applied for this browser session.';renderGrid()};
+ $('.wp-add',b).onsubmit=e=>{e.preventDefault();const name=$('.wp-name',b).value.trim(),src=$('.wp-url',b).value.trim();if(!src)return;let parsed;try{parsed=new URL(src)}catch(err){status.textContent='Enter a valid URL beginning with https://';return}if(!['http:','https:'].includes(parsed.protocol)){status.textContent='Use an http:// or https:// URL.';return}const w={n:name||'Custom wallpaper',type:wallpaperTypeFromUrl(src),src};const custom=readCustomWallpapers();if(!custom.some(x=>x.src===src))custom.push(w);try{localStorage.setItem(WALLPAPER_CUSTOM_KEY,JSON.stringify(custom));}catch(err){status.textContent='Could not save this preset in browser storage. Try a shorter list.';return}layout.wallpaper={type:w.type,src:w.src};saveLayout();applyWallpaper(layout.wallpaper);$('.wp-url',b).value='';$('.wp-name',b).value='';status.textContent='Wallpaper added and applied. Custom URL presets are saved in this browser.';renderGrid()};
+ $('.wp-reset',b).onclick=()=>{layout.wallpaper=null;saveLayout();applyWallpaper(null);status.textContent='Wallpaper reset.';renderGrid()};
  renderGrid()
 }
 
