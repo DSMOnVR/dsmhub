@@ -428,10 +428,27 @@ function applyWallpaper(w){
   layer.id='desk-wallpaper-layer';desk.prepend(layer);if(layer.tagName==='VIDEO')layer.play().catch(()=>{});
  }else{desk.style.backgroundImage=`url("${String(w.src).replace(/["\\]/g,'\\$&')}")`;}
 }
+// Auto-finds wallpapers you've dropped in a 'wallpapers' folder in the repo —
+// no manual listing needed. Images show as-is; mp4/webm/mov files loop as live wallpapers.
+let ghWallpapersCache=null;
+async function loadGithubWallpapers(){
+ if(ghWallpapersCache)return ghWallpapersCache;
+ try{
+  const r=await fetch('https://api.github.com/repos/DSMOnVR/dsmhub/contents/wallpapers');
+  if(!r.ok)return ghWallpapersCache=[];
+  const files=await r.json();
+  ghWallpapersCache=(Array.isArray(files)?files:[]).filter(f=>f.type==='file'&&/\.(png|jpe?g|gif|webp|mp4|webm|mov)$/i.test(f.name)).map(f=>({
+   n:f.name.replace(/\.[^.]+$/,''),
+   type:/\.(mp4|webm|mov)$/i.test(f.name)?'video':'image',
+   src:'wallpapers/'+encodeURIComponent(f.name)
+  }))
+ }catch(e){ghWallpapersCache=[]}
+ return ghWallpapersCache
+}
 function wallpapersApp(b){
- b.innerHTML='<div class="wp"><div class="wp-h">Upload your own</div><input type="file" accept="image/*,video/*" class="wp-file"><p class="wp-note">Uploads work on this browser session only. To keep a wallpaper available after refresh or for other visitors, add an image/video URL below.</p><div class="wp-h">Add online wallpaper</div><form class="wp-add"><input class="wp-name" placeholder="Wallpaper name" aria-label="Wallpaper name"><input class="wp-url" type="url" placeholder="Image, MP4, or YouTube URL" aria-label="Wallpaper URL" required><button class="btn" type="submit">Add</button></form><p class="wp-status" role="status"></p><div class="wp-h">Wallpapers</div><div class="wp-grid"></div><button class="btn alt wp-reset">Reset to default</button></div>';
- const grid=$('.wp-grid',b),status=$('.wp-status',b);
- function allPresets(){return [...WALLPAPER_PRESETS,...readCustomWallpapers()]}
+ b.innerHTML='<div class="wp"><div class="wp-h">Upload your own</div><input type="file" accept="image/*,video/*" class="wp-file"><p class="wp-note">Uploads work on this browser session only. To keep a wallpaper available after refresh or for other visitors, add an image/video URL below.</p><div class="wp-h">Add online wallpaper</div><form class="wp-add"><input class="wp-name" placeholder="Wallpaper name" aria-label="Wallpaper name"><input class="wp-url" type="url" placeholder="Image, MP4, or YouTube URL" aria-label="Wallpaper URL" required><button class="btn" type="submit">Add</button></form><p class="wp-status" role="status"></p><p class="wp-note">Wallpapers also load automatically from a <code>wallpapers</code> folder in the repo — drop an image or an mp4/webm/mov in there and it shows up here (an mp4/webm/mov plays as a looping live wallpaper).</p><div class="wp-h">Wallpapers</div><div class="wp-grid"></div><button class="btn alt wp-reset">Reset to default</button></div>';
+ const grid=$('.wp-grid',b),status=$('.wp-status',b);let ghWallpapers=[];
+ function allPresets(){return [...WALLPAPER_PRESETS,...ghWallpapers,...readCustomWallpapers()]}
  function card(w,isCurrent){
   const el=mk(`<span>${esc(w.n)}</span>`,'button','wp-card'+(isCurrent?' on':''));
   if(w.type==='image')el.style.backgroundImage=`url("${String(w.src).replace(/["\\]/g,'\\$&')}")`;
@@ -444,7 +461,8 @@ function wallpapersApp(b){
  $('.wp-file',b).onchange=e=>{const f=e.target.files&&e.target.files[0];if(!f)return;if(!f.type.startsWith('image/')&&!f.type.startsWith('video/')){status.textContent='Choose an image or video file.';return}const url=URL.createObjectURL(f);const w={n:f.name.replace(/\.[^.]+$/,''),type:f.type.startsWith('video/')?'video':'image',src:url};layout.wallpaper=w;saveLayout();applyWallpaper(w);status.textContent='Wallpaper applied for this browser session.';renderGrid()};
  $('.wp-add',b).onsubmit=e=>{e.preventDefault();const name=$('.wp-name',b).value.trim(),src=$('.wp-url',b).value.trim();if(!src)return;let parsed;try{parsed=new URL(src)}catch(err){status.textContent='Enter a valid URL beginning with https://';return}if(!['http:','https:'].includes(parsed.protocol)){status.textContent='Use an http:// or https:// URL.';return}const w={n:name||'Custom wallpaper',type:wallpaperTypeFromUrl(src),src};const custom=readCustomWallpapers();if(!custom.some(x=>x.src===src))custom.push(w);try{localStorage.setItem(WALLPAPER_CUSTOM_KEY,JSON.stringify(custom));}catch(err){status.textContent='Could not save this preset in browser storage. Try a shorter list.';return}layout.wallpaper={type:w.type,src:w.src};saveLayout();applyWallpaper(layout.wallpaper);$('.wp-url',b).value='';$('.wp-name',b).value='';status.textContent='Wallpaper added and applied. Custom URL presets are saved in this browser.';renderGrid()};
  $('.wp-reset',b).onclick=()=>{layout.wallpaper=null;saveLayout();applyWallpaper(null);status.textContent='Wallpaper reset.';renderGrid()};
- renderGrid()
+ renderGrid();
+ (async()=>{ghWallpapers=await loadGithubWallpapers();renderGrid()})();
 }
 // ---- DMs + friends (reuses dsmhub_profiles for usernames) ----
 function dmsApp(b){
@@ -551,10 +569,11 @@ function storiesApp(b){
  function stopCapture(){stopStream();view.innerHTML=''}
  async function postStory(canvas){
   const blob=await new Promise(res=>canvas.toBlob(res,'image/jpeg',0.85));
-  const path=`stories/${uid}/${Date.now()}.jpg`;
+  const path=`${uid}/stories/${Date.now()}.jpg`;
   const up=await acc.db.storage.from('dsmhub-chat-attachments').upload(path,blob,{contentType:'image/jpeg'});
-  if(up.error){view.innerHTML='<p class="pad-dim">Could not post your story.</p>';return}
-  await acc.db.from('stories').insert({user_id:uid,username:myName,path});
+  if(up.error){view.innerHTML=`<p class="pad-dim">Could not post your story: ${esc(up.error.message||'upload failed')}</p>`;return}
+  const ins=await acc.db.from('stories').insert({user_id:uid,username:myName,path});
+  if(ins.error){await acc.db.storage.from('dsmhub-chat-attachments').remove([path]).catch(()=>{});view.innerHTML=`<p class="pad-dim">Could not post your story: ${esc(ins.error.message||'save failed')}</p>`;return}
   view.innerHTML='';await refresh()
  }
  $('.st-add',b).onclick=startCapture;
